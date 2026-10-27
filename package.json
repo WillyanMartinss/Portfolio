@@ -1,0 +1,17 @@
+{
+  "name": "portfolio-neon",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "vercel-build": "node -e \"console.log('Vercel build ok')\""
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.0"
+  }
+}

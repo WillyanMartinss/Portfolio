@@ -1,0 +1,2377 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1523" />
+    <title>Willyan Martins Portifólios</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%2308121d'/%3E%3Ctext x='50%25' y='54%25' text-anchor='middle' dominant-baseline='middle' font-size='30' font-family='Arial, Helvetica, sans-serif' font-weight='700' fill='%23ffffff'%3EWM%3C/text%3E%3C/svg%3E" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #040b14;
+        --bg-2: #0b1523;
+        --panel: rgba(10, 17, 28, 0.9);
+        --card: rgba(8, 15, 27, 0.9);
+        --line: rgba(103, 232, 249, 0.24);
+        --cyan: #67e8f9;
+        --blue: #60a5fa;
+        --pink: #f472b6;
+        --purple: #a78bfa;
+        --text: #ebf5ff;
+        --muted: #a9bfd9;
+        --success: #34d399;
+        --warning: #fbbf24;
+        --danger: #fb7185;
+        --shadow: 0 20px 45px rgba(14, 116, 144, 0.24);
+        --cursor-ring: rgba(255, 255, 255, 0.96);
+        --cursor-core: rgba(96, 165, 250, 0.18);
+      }
+
+      :root[data-theme="light"] {
+        color-scheme: light;
+        --bg: #f5f7fb;
+        --bg-2: #edf2f9;
+        --panel: rgba(255, 255, 255, 0.96);
+        --card: rgba(255, 255, 255, 0.95);
+        --line: rgba(15, 23, 42, 0.08);
+        --cyan: #0f172a;
+        --blue: #1d4ed8;
+        --pink: #ec4899;
+        --purple: #7c3aed;
+        --text: #0f172a;
+        --muted: #475569;
+        --success: #059669;
+        --warning: #d97706;
+        --danger: #dc2626;
+        --shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+        --cursor-ring: rgba(255, 255, 255, 0.98);
+        --cursor-core: rgba(59, 130, 246, 0.18);
+      }
+
+      @font-face {
+        font-family: 'Cyber';
+        src: url('https://assets.codepen.io/605876/Blender-Pro-Bold.otf');
+        font-display: swap;
+      }
+
+      * { box-sizing: border-box; }
+
+      html {
+        scroll-behavior: smooth;
+        scroll-padding-top: 88px;
+      }
+
+      body {
+        margin: 0;
+        overflow-x: hidden;
+        font-family: Inter, Arial, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(148, 163, 184, 0.10), transparent 22%),
+          radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.06), transparent 18%),
+          linear-gradient(180deg, var(--bg), var(--bg-2));
+        color: var(--text);
+        cursor: auto;
+        transition: background 0.25s ease, color 0.25s ease;
+      }
+
+      :root[data-theme="light"] body::before {
+        background-image:
+          linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
+      }
+
+      :root[data-theme="light"] body::after {
+        background: radial-gradient(circle, rgba(15, 23, 42, 0.08), rgba(124, 58, 237, 0.04) 30%, transparent 70%);
+      }
+
+      @media (pointer: fine) {
+        body.has-cursor,
+        body.has-cursor * {
+          cursor: none;
+        }
+      }
+
+      main, footer {
+        position: relative;
+        z-index: 1;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image:
+          linear-gradient(rgba(103, 232, 249, 0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(103, 232, 249, 0.04) 1px, transparent 1px);
+        background-size: 26px 26px;
+        mask-image: radial-gradient(circle at center, black 52%, transparent 100%);
+        opacity: 0.22;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -18% -10% auto auto;
+        width: 420px;
+        height: 420px;
+        background: radial-gradient(circle, rgba(103, 232, 249, 0.12), rgba(167, 139, 250, 0.05) 30%, transparent 70%);
+        filter: blur(24px);
+        pointer-events: none;
+        animation: auroraFloat 18s ease-in-out infinite alternate;
+        z-index: 0;
+        will-change: transform;
+      }
+
+      @keyframes auroraFloat {
+        0% { transform: translate3d(-10px, 0, 0) scale(1); }
+        100% { transform: translate3d(40px, 30px, 0) scale(1.2); }
+      }
+
+      a { color: inherit; text-decoration: none; }
+      img { max-width: 100%; display: block; }
+      button, input, textarea, select { font: inherit; }
+
+      .container {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(6, 12, 22, 0.72);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+      }
+
+      :root[data-theme="light"] .topbar {
+        background: rgba(255, 255, 255, 0.82);
+      }
+
+      .topbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        min-height: 72px;
+      }
+
+      .brand {
+        font-family: 'Cyber', sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--cyan);
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .nav a,
+      .nav button {
+        position: relative;
+        font-family: 'Cyber', sans-serif;
+        background: rgba(15, 23, 42, 0.48);
+        border: 1px solid rgba(103, 232, 249, 0.16);
+        color: var(--muted);
+        padding: 8px 12px;
+        border-radius: 10px;
+        cursor: pointer;
+        overflow: hidden;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 0.72rem;
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+      }
+
+      :root[data-theme="light"] .nav a,
+      :root[data-theme="light"] .nav button {
+        background: rgba(255, 255, 255, 0.5);
+        border-color: rgba(15, 23, 42, 0.08);
+      }
+
+      .nav a::before,
+      .nav button::before,
+      .btn::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent 0%, rgba(103, 232, 249, 0.35) 48%, transparent 100%);
+        transform: translateX(-120%);
+        transition: transform 0.55s ease;
+      }
+
+      .nav a:hover,
+      .nav button:hover {
+        color: var(--text);
+        border-color: rgba(103, 232, 249, 0.7);
+        box-shadow: 0 0 18px rgba(103, 232, 249, 0.15);
+        transform: translateY(-1px);
+      }
+
+      .nav a:hover::before,
+      .nav button:hover::before,
+      .btn:hover::before {
+        transform: translateX(120%);
+      }
+
+      .btn {
+        position: relative;
+        font-family: 'Cyber', sans-serif;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid var(--cyan);
+        border-radius: 12px;
+        background: rgba(103, 232, 249, 0.06);
+        color: var(--cyan);
+        padding: 12px 18px;
+        font-weight: 700;
+        cursor: pointer;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+        box-shadow: inset 0 0 10px rgba(103, 232, 249, 0.08), 0 0 18px rgba(103, 232, 249, 0.12);
+        overflow: hidden;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px) scale(1.01);
+        background: linear-gradient(135deg, rgba(103, 232, 249, 0.18), rgba(96, 165, 250, 0.18));
+        color: #dffaff;
+        box-shadow: 0 0 26px rgba(103, 232, 249, 0.2), inset 0 0 18px rgba(103, 232, 249, 0.18);
+      }
+
+      :root[data-theme="light"] .btn {
+        border-color: rgba(15, 23, 42, 0.12);
+        background: rgba(255, 255, 255, 0.9);
+        color: var(--text);
+        box-shadow: inset 0 0 10px rgba(148, 163, 184, 0.08), 0 0 18px rgba(148, 163, 184, 0.08);
+      }
+
+      .btn.secondary {
+        border-color: var(--pink);
+        color: var(--pink);
+        background: rgba(244, 114, 182, 0.06);
+        box-shadow: inset 0 0 10px rgba(244, 114, 182, 0.08), 0 0 18px rgba(244, 114, 182, 0.1);
+      }
+
+      .btn.secondary:hover {
+        background: linear-gradient(135deg, rgba(244, 114, 182, 0.2), rgba(168, 85, 247, 0.15));
+        color: #fff0f6;
+        box-shadow: 0 0 26px rgba(244, 114, 182, 0.18);
+      }
+
+      :root[data-theme="light"] .btn.secondary {
+        border-color: rgba(236, 72, 153, 0.3);
+        color: var(--pink);
+        background: rgba(255, 255, 255, 0.88);
+        box-shadow: inset 0 0 10px rgba(236, 72, 153, 0.08), 0 0 18px rgba(236, 72, 153, 0.08);
+      }
+
+      :root[data-theme="light"] .btn.secondary:hover {
+        background: linear-gradient(135deg, rgba(236, 72, 153, 0.08), rgba(124, 58, 237, 0.08));
+        color: var(--text);
+        box-shadow: 0 0 26px rgba(236, 72, 153, 0.12);
+      }
+
+      .btn.small {
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+      }
+
+      .theme-toggle {
+        min-width: 44px;
+        width: 44px;
+        height: 38px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      .scroll-progress {
+        position: fixed;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--cyan), var(--pink), var(--purple));
+        transform-origin: left center;
+        transform: scaleX(0);
+        box-shadow: 0 0 18px rgba(103, 232, 249, 0.9);
+        z-index: 120;
+      }
+
+      .cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 140;
+        border: 1px solid var(--cursor-ring);
+        background: var(--cursor-core);
+        box-shadow: 0 0 18px rgba(96, 165, 250, 0.55), 0 0 28px rgba(96, 165, 250, 0.22);
+        transform: translate(-50%, -50%);
+        transition: width 0.25s ease, height 0.25s ease, opacity 0.2s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+        opacity: 1;
+      }
+
+      .cursor::before {
+        content: "";
+        position: absolute;
+        inset: 4px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.92);
+      }
+
+      .cursor::after {
+        content: "";
+        position: absolute;
+        right: -9px;
+        top: 50%;
+        width: 0;
+        height: 0;
+        border-top: 5px solid transparent;
+        border-bottom: 5px solid transparent;
+        border-left: 10px solid rgba(103, 232, 249, 0.9);
+        transform: translateY(-50%);
+        filter: drop-shadow(0 0 8px rgba(103, 232, 249, 0.78));
+      }
+
+      body.has-cursor .cursor {
+        opacity: 1;
+      }
+
+      .cursor.active {
+        width: 30px;
+        height: 30px;
+        background: rgba(96, 165, 250, 0.08);
+      }
+
+      @media (max-width: 820px) {
+        body { cursor: auto; }
+        .cursor { display: none; }
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+        transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease;
+        will-change: opacity, transform;
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+      }
+
+      .admin-bar {
+        display: none;
+        width: 100%;
+        padding: 12px 0 18px;
+      }
+
+      .admin-bar.visible {
+        display: block;
+      }
+
+      .admin-inner {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 90px 0 40px;
+        position: relative;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 40px auto auto 30px;
+        width: 280px;
+        height: 280px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(103, 232, 249, 0.14), transparent 60%);
+        filter: blur(20px);
+        pointer-events: none;
+      }
+
+      .hero-inner {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 34px;
+        align-items: start;
+      }
+
+      .hero-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 420px;
+        padding-top: 36px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.8rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--cyan);
+        margin-bottom: 18px;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--cyan), var(--purple));
+        box-shadow: 0 0 18px rgba(103, 232, 249, 0.8);
+      }
+
+      h1, h2, h3, h4, p {
+        margin: 0;
+      }
+
+      .hero h1 {
+        font-size: clamp(2.7rem, 5vw, 5rem);
+        line-height: 1.02;
+        letter-spacing: -0.04em;
+        margin: 0 0 16px;
+        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      }
+
+      .hero-title {
+        position: relative;
+        display: inline-block;
+        text-shadow: 0 0 18px rgba(103, 232, 249, 0.35);
+      }
+
+      .hero-title::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.08), transparent);
+        transform: translateX(-100%);
+        animation: glitchSweep 4s ease-in-out infinite;
+      }
+
+      @keyframes glitchSweep {
+        0%, 100% { transform: translateX(-110%); }
+        50% { transform: translateX(110%); }
+      }
+
+      .typewriter {
+        min-height: 3.2em;
+        position: relative;
+        color: var(--muted);
+        font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      }
+
+      .typewriter::after {
+        content: "";
+        display: inline-block;
+        width: 0.08em;
+        height: 1em;
+        margin-left: 0.12em;
+        vertical-align: middle;
+        background: var(--cyan);
+        animation: blink 0.8s steps(1) infinite;
+      }
+
+      @keyframes blink {
+        50% { opacity: 0; }
+      }
+
+      .hero h1 .accent {
+        color: var(--cyan);
+        text-shadow: 0 0 22px rgba(103, 232, 249, 0.7);
+      }
+
+      .hero p {
+        color: var(--muted);
+        max-width: 620px;
+        font-size: 1.05rem;
+        line-height: 1.8;
+        white-space: pre-line;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 26px;
+      }
+
+      .hero-card {
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(8, 15, 27, 0.9));
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .hero-card-top {
+        background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(244, 114, 182, 0.15));
+        padding: 28px;
+      }
+
+      .profile-media {
+        position: relative;
+        padding: 18px 18px 12px;
+        background: linear-gradient(180deg, rgba(6, 12, 21, 0.2), transparent 40%);
+      }
+
+      .photo-frame {
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        border: 1px solid rgba(103, 232, 249, 0.35);
+        box-shadow: 0 20px 40px rgba(8, 15, 27, 0.42), 0 0 30px rgba(103, 232, 249, 0.12);
+      }
+
+      .photo-frame img {
+        width: 100%;
+        height: 270px;
+        object-fit: cover;
+        display: block;
+        animation: floatImage 7s ease-in-out infinite;
+      }
+
+      @keyframes floatImage {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+
+      .mini-carousel {
+        position: relative;
+        margin-top: 14px;
+        min-height: 120px;
+      }
+
+      .mini-card {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        gap: 8px;
+        padding: 16px 18px;
+        border-radius: 16px;
+        border: 1px solid rgba(103, 232, 249, 0.2);
+        background: rgba(8, 15, 27, 0.8);
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+      }
+
+      .mini-card.active {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .mini-card span {
+        color: var(--cyan);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .mini-card strong {
+        font-size: 1.06rem;
+      }
+
+      .mini-card small {
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .avatar {
+        width: 124px;
+        height: 124px;
+        border: 2px solid rgba(103, 232, 249, 0.6);
+        border-radius: 28px;
+        background: linear-gradient(135deg, rgba(103, 232, 249, 0.15), rgba(167, 139, 250, 0.2));
+        display: grid;
+        place-items: center;
+        font-size: 2.6rem;
+        font-weight: 700;
+        margin-bottom: 18px;
+        color: var(--cyan);
+        overflow: hidden;
+      }
+
+      .avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .hero-card-body {
+        padding: 26px 26px 22px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 14px;
+      }
+
+      .stat {
+        background: rgba(30, 41, 59, 0.6);
+        border: 1px solid rgba(103, 232, 249, 0.2);
+        border-radius: 12px;
+        padding: 16px 12px;
+        text-align: center;
+      }
+
+      .stat strong {
+        display: block;
+        font-size: 1.4rem;
+        color: var(--cyan);
+      }
+
+      .stat span {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .section {
+        padding: 28px 0 18px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+
+      .section-header h2 {
+        font-size: clamp(1.8rem, 2vw, 2.6rem);
+      }
+
+      .section-header h2 span {
+        color: var(--cyan);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .skill-card,
+      .project-card,
+      .info-card {
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 22px;
+        box-shadow: var(--shadow);
+      }
+
+      :root[data-theme="light"] .skill-card,
+      :root[data-theme="light"] .project-card,
+      :root[data-theme="light"] .info-card,
+      :root[data-theme="light"] .hero-card,
+      :root[data-theme="light"] .stat,
+      :root[data-theme="light"] .admin-inner,
+      :root[data-theme="light"] .modal-card,
+      :root[data-theme="light"] .mini-card {
+        background: rgba(255, 255, 255, 0.96);
+        border-color: rgba(15, 23, 42, 0.1);
+        box-shadow: 0 18px 32px rgba(15, 23, 42, 0.06);
+      }
+
+      .skill-card,
+      .project-card,
+      .info-card,
+      .hero-card,
+      .stat {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .skill-card {
+        min-height: 230px;
+        background: linear-gradient(160deg, rgba(7, 12, 20, 0.96), rgba(10, 17, 28, 0.92));
+        border: 1px solid rgba(103, 232, 249, 0.28);
+        box-shadow: 0 20px 40px rgba(14, 116, 144, 0.18), inset 0 0 20px rgba(148, 163, 184, 0.06);
+        transform: perspective(1200px) rotateX(0deg) rotateY(0deg) translateY(0);
+        transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, filter 0.35s ease;
+        backdrop-filter: blur(8px);
+        isolation: isolate;
+      }
+
+      .skill-card::before {
+        content: "";
+        position: absolute;
+        inset: -35% auto auto -18%;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: radial-gradient(circle, color-mix(in srgb, var(--skill-accent, var(--cyan)) 62%, transparent), transparent 72%);
+        opacity: 0.75;
+        filter: blur(16px);
+        pointer-events: none;
+        animation: hologramPulse 6s ease-in-out infinite;
+      }
+
+      .skill-card::after {
+        content: "";
+        position: absolute;
+        inset: 12px 12px auto 12px;
+        height: calc(100% - 24px);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), transparent 28%, transparent 72%, rgba(103,232,249,0.04));
+        box-shadow: inset 0 0 18px rgba(103, 232, 249, 0.12);
+        pointer-events: none;
+      }
+
+      @keyframes hologramPulse {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.12); opacity: 0.95; }
+      }
+
+      .skill-card:hover {
+        transform: perspective(1200px) rotateY(-16deg) rotateX(0deg) translateX(10px) translateY(-8px) scale(1.02);
+        border-color: color-mix(in srgb, var(--skill-accent, var(--cyan)) 76%, white);
+        box-shadow: 0 26px 48px rgba(96, 165, 250, 0.22), 0 0 30px rgba(103, 232, 249, 0.2);
+        filter: saturate(1.15);
+      }
+
+      .skill-card:hover::before {
+        transform: scale(1.2) translateX(18px);
+      }
+
+      .skill-card:hover::after {
+        box-shadow: inset 0 0 18px rgba(103, 232, 249, 0.18), 0 0 18px rgba(103, 232, 249, 0.14);
+      }
+
+      .skill-card .skill-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 14px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .skill-card .icon {
+        display: inline-grid;
+        width: 54px;
+        height: 54px;
+        place-items: center;
+        border-radius: 14px;
+        background: linear-gradient(135deg, color-mix(in srgb, var(--skill-accent, var(--cyan)) 24%, transparent), rgba(255,255,255,0.04));
+        border: 1px solid color-mix(in srgb, var(--skill-accent, var(--cyan)) 42%, transparent);
+        color: var(--skill-accent, var(--cyan));
+        font-size: 1.25rem;
+        box-shadow: inset 0 0 16px rgba(255,255,255,0.06), 0 0 18px rgba(103, 232, 249, 0.14);
+      }
+
+      .skill-card .skill-index {
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--skill-accent, var(--cyan));
+        opacity: 0.92;
+      }
+
+      .skill-card h3 {
+        margin-bottom: 8px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .skill-card .skill-idea {
+        margin: 0 0 10px;
+        color: var(--text);
+        line-height: 1.6;
+        font-size: 0.92rem;
+        position: relative;
+        z-index: 1;
+        opacity: 0.88;
+        transform: translateY(4px);
+        transition: opacity 0.28s ease, transform 0.28s ease;
+      }
+
+      .skill-card:hover .skill-idea,
+      .skill-card:hover p {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .skill-card p {
+        position: relative;
+        z-index: 1;
+        opacity: 0.8;
+        transform: translateY(5px);
+        transition: opacity 0.28s ease, transform 0.28s ease;
+      }
+
+      .tech-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .tech-list span {
+        display: inline-flex;
+        align-items: center;
+        padding: 7px 10px;
+        border-radius: 999px;
+        border: 1px solid color-mix(in srgb, var(--skill-accent, var(--cyan)) 52%, transparent);
+        background: color-mix(in srgb, var(--skill-accent, var(--cyan)) 12%, rgba(255,255,255,0.02));
+        color: var(--text);
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        box-shadow: inset 0 0 12px rgba(103,232,249,0.06);
+      }
+
+      :root[data-theme="light"] .skill-card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,247,251,0.96));
+        border-color: rgba(15, 23, 42, 0.12);
+      }
+
+      :root[data-theme="light"] .tech-list span {
+        background: rgba(148, 163, 184, 0.08);
+        border-color: rgba(15, 23, 42, 0.12);
+        color: #0f172a;
+      }
+
+      .skill-card::after,
+      .project-card::after,
+      .info-card::after,
+      .hero-card::after {
+        content: "";
+        position: absolute;
+        inset: 0 auto auto 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(103, 232, 249, 0.7), transparent);
+        opacity: 0.7;
+      }
+
+      .project-card {
+        transform-style: preserve-3d;
+        transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(0);
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+      }
+
+      .project-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(103, 232, 249, 0.25), transparent 30%);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+        pointer-events: none;
+      }
+
+      .project-card:hover::before {
+        opacity: 1;
+      }
+
+      .project-card:hover {
+        transform: perspective(1100px) rotateY(-14deg) rotateX(0deg) translateX(8px) translateY(-8px) scale(1.015);
+        border-color: rgba(103, 232, 249, 0.7);
+        box-shadow: 0 18px 32px rgba(96, 165, 250, 0.18), 0 0 22px rgba(103, 232, 249, 0.14);
+      }
+
+      .skill-card {
+        min-height: 150px;
+      }
+
+      .skill-card .icon {
+        display: inline-grid;
+        width: 46px;
+        height: 46px;
+        place-items: center;
+        border-radius: 12px;
+        background: rgba(103, 232, 249, 0.1);
+        border: 1px solid rgba(103, 232, 249, 0.2);
+        color: var(--cyan);
+        margin-bottom: 16px;
+        font-size: 1.2rem;
+      }
+
+      .skill-card h3 {
+        margin-bottom: 8px;
+      }
+
+      .skill-card p,
+      .project-card p,
+      .info-card p,
+      .resume-copy,
+      .contact-list {
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .project-card {
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+        transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+
+      .project-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(103, 232, 249, 0.7);
+        box-shadow: 0 18px 28px rgba(15, 23, 42, 0.5);
+      }
+
+      .project-visual {
+        position: relative;
+        height: 360px;
+        overflow: hidden;
+        border: 2px solid rgba(103, 232, 249, 0.7);
+        border-radius: 18px 18px 26px 26px;
+        margin-bottom: 18px;
+        background: rgba(2, 6, 23, 0.9);
+        box-shadow: 0 0 30px rgba(103, 232, 249, 0.22), inset 0 0 16px rgba(103, 232, 249, 0.08);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      :root[data-theme="light"] .project-visual {
+        background: rgba(255, 255, 255, 0.96);
+        border-color: rgba(15, 23, 42, 0.12);
+        box-shadow: 0 0 20px rgba(148, 163, 184, 0.12), inset 0 0 16px rgba(148, 163, 184, 0.08);
+      }
+
+      .project-card:hover .project-visual {
+        transform: scale(1.01);
+        box-shadow: 0 0 30px rgba(96, 165, 250, 0.25), inset 0 0 16px rgba(103, 232, 249, 0.1);
+      }
+
+      .project-visual .preview-badge {
+        position: absolute;
+        left: 12px;
+        bottom: 12px;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.8);
+        border: 1px solid rgba(103, 232, 249, 0.4);
+        color: var(--cyan);
+        font-size: 0.72rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      :root[data-theme="light"] .project-visual .preview-badge {
+        background: rgba(255, 255, 255, 0.96);
+        border-color: rgba(15, 23, 42, 0.12);
+        color: #0f172a;
+        box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+      }
+
+      .project-visual::before {
+        content: "";
+        position: absolute;
+        inset: 12px 12px auto 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: rgba(103, 232, 249, 0.15);
+        z-index: 2;
+      }
+
+      .project-visual iframe,
+      .project-visual img {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+        object-fit: cover;
+        background: #08131d;
+      }
+
+      .project-visual iframe {
+        transform: scale(1);
+      }
+
+      .project-visual .placeholder {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        color: var(--muted);
+        background: linear-gradient(135deg, rgba(96, 165, 250, 0.08), rgba(244, 114, 182, 0.08));
+      }
+
+      .project-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .tag {
+        display: inline-flex;
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(103, 232, 249, 0.08);
+        color: var(--cyan);
+        border: 1px solid rgba(103, 232, 249, 0.2);
+        font-size: 0.72rem;
+      }
+
+      :root[data-theme="light"] .tag {
+        background: rgba(148, 163, 184, 0.08);
+        border-color: rgba(15, 23, 42, 0.12);
+        color: #0f172a;
+      }
+
+      .project-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .resume-layout {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 22px;
+      }
+
+      .resume-copy {
+        white-space: pre-line;
+      }
+
+      .contact-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .contact-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .contact-item span:first-child {
+        color: var(--text);
+      }
+
+      footer {
+        padding: 44px 0 48px;
+        color: var(--muted);
+      }
+
+      .footer-shell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        border-top: 1px solid var(--line);
+        padding-top: 24px;
+      }
+
+      .whatsapp-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(52, 211, 153, 0.16));
+        border: 1px solid rgba(52, 211, 153, 0.8);
+        color: #d9fff5;
+        font-family: 'Cyber', sans-serif;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        box-shadow: 0 0 24px rgba(52, 211, 153, 0.18);
+      }
+
+      .whatsapp-icon {
+        width: 18px;
+        height: 18px;
+        display: inline-block;
+        flex-shrink: 0;
+      }
+
+      .whatsapp-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0 30px rgba(52, 211, 153, 0.24);
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.76);
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 18px;
+        overflow-y: auto;
+        z-index: 100;
+      }
+
+      .modal-card {
+        width: min(600px, 100%);
+        max-height: calc(100vh - 36px);
+        overflow-y: auto;
+        background: rgba(15, 23, 42, 0.97);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        padding: 24px;
+        margin: auto 0;
+        box-shadow: var(--shadow);
+      }
+
+      .modal-card h3 {
+        margin-bottom: 18px;
+        font-size: 1.6rem;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .field label {
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      input, textarea, select {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(103, 232, 249, 0.3);
+        color: var(--text);
+        border-radius: 12px;
+        padding: 12px 14px;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .hidden { display: none !important; }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+        }
+        .reveal {
+          opacity: 1;
+          transform: none;
+          filter: none;
+          transition: none;
+        }
+      }
+
+      @media (max-width: 980px) {
+        .grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 920px) {
+        .hero-inner,
+        .resume-layout {
+          grid-template-columns: 1fr;
+        }
+        .hero-card {
+          max-width: 620px;
+          margin: 0 auto;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .topbar-inner {
+          flex-direction: column;
+          justify-content: center;
+          padding: 14px 0;
+        }
+        .nav {
+          justify-content: center;
+          gap: 10px;
+        }
+        .nav a,
+        .nav button {
+          padding: 7px 10px;
+          font-size: 0.85rem;
+        }
+        .hero {
+          padding-top: 56px;
+        }
+        .hero h1 {
+          font-size: clamp(2.3rem, 11vw, 4rem);
+        }
+        .project-visual {
+          height: 260px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .container {
+          width: min(100% - 20px, 1180px);
+        }
+        .topbar-inner, .footer-shell {
+          justify-content: center;
+        }
+        .nav {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .stats {
+          grid-template-columns: 1fr;
+        }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .project-actions {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+        .project-actions a,
+        .project-actions button {
+          width: 100%;
+        }
+        .hero-actions {
+          flex-direction: column;
+        }
+        .hero-actions a,
+        .hero-actions button {
+          width: 100%;
+        }
+        .modal-card {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div class="cursor" id="cursorGlow"></div>
+
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div class="brand">Willyan Martins Portifólios</div>
+        <nav class="nav">
+          <a href="#sobre">Sobre</a>
+          <a href="#habilidades">Habilidades</a>
+          <a href="#projetos">Projetos</a>
+          <a href="#contato">Contato</a>
+          <button type="button" id="themeToggle" class="btn small secondary theme-toggle" aria-label="Alternar tema">
+            <span id="themeIcon" aria-hidden="true">☀️</span>
+            <span id="themeLabel" class="sr-only">Alternar tema</span>
+          </button>
+          <button type="button" id="loginBtn" class="btn small">Login</button>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <div id="adminBar" class="admin-bar">
+        <div class="admin-inner">
+          <button type="button" class="btn small" data-action="edit-profile">Editar perfil</button>
+          <button type="button" class="btn small" data-action="edit-skills">Editar habilidades</button>
+          <button type="button" class="btn small" data-action="edit-resume">Editar currículo</button>
+          <button type="button" class="btn small secondary" data-action="new-project">+ Novo projeto</button>
+          <button type="button" class="btn small" data-action="edit-account">Conta</button>
+          <button type="button" class="btn small secondary" data-action="logout">Sair</button>
+        </div>
+      </div>
+
+      <section class="hero reveal" id="sobre">
+        <div class="hero-inner">
+          <div class="reveal hero-copy">
+            <div class="eyebrow">Disponível para trabalho</div>
+            <h1 id="heroName" class="hero-title">Willyan Martins</h1>
+            <p id="heroBio" class="typewriter" aria-live="polite">Descreva seu perfil, suas habilidades e o que você faz melhor.</p>
+            <div class="hero-actions">
+              <a href="#projetos" class="btn">Ver projetos</a>
+              <a href="#contato" class="btn secondary">Falar comigo</a>
+            </div>
+          </div>
+
+          <div class="hero-card reveal">
+            <div class="hero-card-top">
+              <div class="avatar" id="avatarInitials">SN</div>
+              <h3 id="heroTitle">Desenvolvedor Full Stack</h3>
+            </div>
+            <div class="profile-media">
+              <div class="photo-frame">
+                <img id="heroImage" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80" alt="Foto do profissional" />
+              </div>
+              <div class="mini-carousel" id="miniCarousel">
+                <article class="mini-card active">
+                  <span>Projeto</span>
+                  <strong>Dashboard de gestão</strong>
+                  <small>Entrega mais clareza, automação e produtividade para negócios.</small>
+                </article>
+                <article class="mini-card">
+                  <span>Feedback</span>
+                  <strong>Empresa de software</strong>
+                  <small>Fluxo mais eficiente, comunicação melhor e presença digital mais forte.</small>
+                </article>
+                <article class="mini-card">
+                  <span>Resultado</span>
+                  <strong>Experiência premium</strong>
+                  <small>Interfaces modernas com foco em conversão, confiança e valor percebido.</small>
+                </article>
+              </div>
+            </div>
+            <div class="hero-card-body">
+              <div class="stats">
+                <div class="stat">
+                  <strong id="statYears">4+</strong>
+                  <span>Anos</span>
+                </div>
+                <div class="stat">
+                  <strong id="statProjects">12</strong>
+                  <span>Projetos</span>
+                </div>
+                <div class="stat">
+                  <strong id="statClients">8</strong>
+                  <span>Clientes</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section reveal" id="habilidades">
+        <div class="section-header reveal">
+          <h2><span>Habilidades</span></h2>
+        </div>
+        <div id="skillsGrid" class="grid"></div>
+      </section>
+
+      <section class="section reveal" id="projetos">
+        <div class="section-header reveal">
+          <h2><span>Projetos</span></h2>
+        </div>
+        <div id="projectsGrid" class="grid"></div>
+      </section>
+
+      <section class="section reveal" id="curriculo">
+        <div class="section-header reveal">
+          <h2><span>Currículo</span></h2>
+        </div>
+        <div class="resume-layout">
+          <div class="info-card">
+            <p id="resumeText" class="resume-copy">Escreva seu currículo aqui.</p>
+            <div class="project-actions" id="resumeActions"></div>
+          </div>
+          <div class="info-card" id="contato">
+            <h3>Contato</h3>
+            <div class="contact-list">
+              <div class="contact-item"><span>Email</span><span id="contactEmail">email@exemplo.com</span></div>
+              <div class="contact-item"><span>Telefone</span><span id="contactPhone">(11) 99999-9999</span></div>
+              <div class="contact-item"><span>Local</span><span id="contactCity">São Paulo, SP</span></div>
+              <div class="contact-item"><span>GitHub</span><span id="contactGithub">github.com/seuusuario</span></div>
+            </div>
+            <div class="project-actions" style="margin-top: 18px;">
+              <a id="whatsappLink" class="btn whatsapp-btn" href="https://wa.me/5541996484746?text=Ol%C3%A1%2C%20fiquei%20interessado%20em%20desenvolvimento%20de%20sistema%20pr%C3%B3prio.%20Gostaria%20de%20saber%20mais%20sobre%20o%20desenvolvimento%20do%20sistema%20e%20o%20or%C3%A7amento." target="_blank" rel="noreferrer">
+                <svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+                  <path d="M20.52 3.48A11.74 11.74 0 0 0 12.06 0C5.49 0 .14 5.35.14 11.91c0 2.1.55 4.14 1.59 5.94L0 24l6.3-1.65A11.94 11.94 0 0 0 12.06 24c6.58 0 11.93-5.36 11.93-11.92 0-3.16-1.24-6.15-3.47-8.6ZM12.06 21.8c-1.9 0-3.77-.5-5.39-1.46l-.39-.23-3.74.98 1-3.64-.25-.38A9.87 9.87 0 0 1 2.2 11.9c0-5.45 4.42-9.87 9.86-9.87 2.63 0 5.1 1.02 6.96 2.88A9.77 9.77 0 0 1 21.94 11.9c0 5.45-4.42 9.9-9.88 9.9Zm5.42-7.4c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.66.15-.2.3-.76.97-.93 1.17-.17.2-.34.22-.63.08-.3-.15-1.27-.47-2.42-1.49-.89-.79-1.49-1.76-1.67-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.34.45-.51.15-.17.2-.29.3-.48.1-.2.05-.36-.02-.51-.08-.15-.66-1.6-.9-2.18-.24-.58-.48-.5-.66-.5h-.56c-.19 0-.51.07-.78.36-.27.3-1.03 1-1.03 2.44s1.05 2.82 1.2 3.02c.15.2 2.06 3.16 4.99 4.43.7.3 1.25.48 1.68.62.71.23 1.35.2 1.86.12.57-.08 1.77-.72 2.02-1.41.25-.69.25-1.28.17-1.4-.08-.12-.27-.2-.57-.35Z"/>
+                </svg>
+                Solicitar orçamento
+              </a>
+              <a id="emailLink" class="btn secondary" href="mailto:contato@exemplo.com?subject=Solicita%C3%A7%C3%A3o%20de%20or%C3%A7amento&body=Ol%C3%A1%2C%20fiquei%20interessado%20em%20desenvolvimento%20de%20sistema%20pr%C3%B3prio.%20Gostaria%20de%20saber%20mais%20sobre%20o%20or%C3%A7amento." target="_blank" rel="noreferrer">
+                Enviar e-mail
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container footer-shell">
+        <span>© <span id="year"></span> · Todos os direitos reservados.</span>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <span id="footerTag">Portfólio pessoal</span>
+          <a id="footerWhatsApp" class="btn whatsapp-btn" href="https://wa.me/5541996484746?text=Ol%C3%A1%2C%20fiquei%20interessado%20em%20desenvolvimento%20de%20sistema%20pr%C3%B3prio.%20Gostaria%20de%20saber%20mais%20sobre%20o%20desenvolvimento%20do%20sistema%20e%20o%20or%C3%A7amento." target="_blank" rel="noreferrer">
+            <svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+              <path d="M20.52 3.48A11.74 11.74 0 0 0 12.06 0C5.49 0 .14 5.35.14 11.91c0 2.1.55 4.14 1.59 5.94L0 24l6.3-1.65A11.94 11.94 0 0 0 12.06 24c6.58 0 11.93-5.36 11.93-11.92 0-3.16-1.24-6.15-3.47-8.6ZM12.06 21.8c-1.9 0-3.77-.5-5.39-1.46l-.39-.23-3.74.98 1-3.64-.25-.38A9.87 9.87 0 0 1 2.2 11.9c0-5.45 4.42-9.87 9.86-9.87 2.63 0 5.1 1.02 6.96 2.88A9.77 9.77 0 0 1 21.94 11.9c0 5.45-4.42 9.9-9.88 9.9Zm5.42-7.4c-.3-.15-1.77-.87-2.04-.97-.27-.1-.47-.15-.66.15-.2.3-.76.97-.93 1.17-.17.2-.34.22-.63.08-.3-.15-1.27-.47-2.42-1.49-.89-.79-1.49-1.76-1.67-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.34.45-.51.15-.17.2-.29.3-.48.1-.2.05-.36-.02-.51-.08-.15-.66-1.6-.9-2.18-.24-.58-.48-.5-.66-.5h-.56c-.19 0-.51.07-.78.36-.27.3-1.03 1-1.03 2.44s1.05 2.82 1.2 3.02c.15.2 2.06 3.16 4.99 4.43.7.3 1.25.48 1.68.62.71.23 1.35.2 1.86.12.57-.08 1.77-.72 2.02-1.41.25-.69.25-1.28.17-1.4-.08-.12-.27-.2-.57-.35Z"/>
+            </svg>
+            Orçamento
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const STORAGE_KEY = 'portfolio-site-data-v1';
+      const ACCOUNT_KEY = 'portfolio-site-account-v1';
+      const SESSION_KEY = 'portfolio-site-session-v1';
+      const THEME_KEY = 'portfolio-theme-v1';
+
+      const defaultAccount = { username: 'admin', password: 'admin123' };
+
+      const defaultData = {
+        profile: {
+          name: 'Willyan Martins',
+          title: 'Desenvolvedor Full Stack',
+          presentation: 'Desenvolvedor Full Stack com foco em produto, performance e experiência digital.',
+          bio: 'Sou desenvolvedor focado em criar experiências digitais modernas, funcionalidade clara e interfaces que entregam valor real para pessoas e negócios.',
+          email: 'seuemail@email.com',
+          phone: '41996484746',
+          city: 'São Paulo, SP',
+          github: 'github.com/seuusuario',
+          linkedin: 'linkedin.com/in/seuusuario',
+          heroImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80',
+          logoImage: '',
+          years: '4+',
+          projectsCount: '12',
+          clientsCount: '8'
+        },
+        skills: [
+          { icon: '⚙️', title: 'Frontend', idea: 'Crio experiências rápidas, fluidas e com foco em produto.', text: 'Criação de interfaces responsivas, acessíveis e bem pensadas para diversas telas e dispositivos.', stack: ['React', 'Next.js', 'TypeScript', 'UX'] },
+          { icon: '🧠', title: 'UX/UI', idea: 'Transformo conceitos em experiências simples de usar e vender.', text: 'Design focado em usabilidade, clareza visual e uma jornada eficiente para o usuário final.', stack: ['Figma', 'Design Systems', 'Prototipagem', 'Acessibilidade'] },
+          { icon: '💻', title: 'Backend', idea: 'Estruturo a lógica que sustenta o produto com segurança e escalabilidade.', text: 'Lógica de negócio, APIs, autenticação, integrações e estrutura para aplicações escaláveis.', stack: ['Node.js', 'APIs', 'Banco de Dados', 'Segurança'] },
+          { icon: '📦', title: 'Produtos', idea: 'Conecto tecnologia, estratégia e execução para criar valor real.', text: 'Transformo ideias em produtos úteis, com visão técnica, estratégica e de experiência.', stack: ['Product Mindset', 'Roadmap', 'Entrega', 'Performance'] }
+        ],
+        projects: [
+          {
+            title: 'Sistema de Gestão',
+            description: 'Dashboard completo para organização de processos internos, relatórios e acompanhamento de indicadores em tempo real.',
+            url: 'https://example.com',
+            repo: 'https://github.com/example',
+            image: '',
+            tags: ['Dashboard', 'Web App', 'UX']
+          },
+          {
+            title: 'Loja de E-commerce',
+            description: 'Loja moderna com catálogo, carrinho, checkout e identidade visual alinhada ao posicionamento da marca.',
+            url: 'https://example.com',
+            repo: 'https://github.com/example',
+            image: '',
+            tags: ['E-commerce', 'React', 'Mobile']
+          },
+          {
+            title: 'Portal de Conteúdo',
+            description: 'Plataforma para publicação de artigos, categorias, busca e destaque de conteúdos por interesse do público.',
+            url: 'https://example.com',
+            repo: 'https://github.com/example',
+            image: '',
+            tags: ['CMS', 'Blog', 'SEO']
+          }
+        ],
+        resume: {
+          text: 'Profissional com foco em desenvolvimento de soluções digitais, experiência em produto, interface e arquitetura de software. Tenho trabalhado com criação de aplicações web, automação e melhorias contínuas para negócios e clientes.',
+          link: '',
+          pdf: '',
+          pdfName: 'curriculo.pdf'
+        }
+      };
+
+      let state = loadState();
+      let isLogged = sessionStorage.getItem(SESSION_KEY) === 'true';
+      let account = loadAccount();
+      let serverToken = localStorage.getItem('portfolio-session-token') || '';
+
+      function escapeHtml(value) {
+        return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[char]));
+      }
+
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve) => {
+          if (!file) {
+            resolve('');
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = (event) => resolve(event.target?.result || '');
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function readImageFile(file) {
+        return new Promise((resolve) => {
+          if (!file || !file.type.startsWith('image/')) {
+            resolve('');
+            return;
+          }
+
+          resolve(readFileAsDataUrl(file));
+        });
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          return raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(defaultData));
+        } catch {
+          return JSON.parse(JSON.stringify(defaultData));
+        }
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function loadAccount() {
+        try {
+          const raw = localStorage.getItem(ACCOUNT_KEY);
+          return raw ? JSON.parse(raw) : { ...defaultAccount };
+        } catch {
+          return { ...defaultAccount };
+        }
+      }
+
+      function saveAccount() {
+        localStorage.setItem(ACCOUNT_KEY, JSON.stringify(account));
+      }
+
+      function applyTheme(themeName) {
+        const nextTheme = themeName === 'light' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        document.documentElement.style.setProperty('--cursor-ring', nextTheme === 'dark' ? 'rgba(255, 255, 255, 0.96)' : 'rgba(255, 255, 255, 0.98)');
+        document.documentElement.style.setProperty('--cursor-core', nextTheme === 'dark' ? 'rgba(96, 165, 250, 0.18)' : 'rgba(59, 130, 246, 0.18)');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeLabel = document.getElementById('themeLabel');
+        if (themeIcon) themeIcon.textContent = nextTheme === 'dark' ? '☀️' : '🌙';
+        if (themeLabel) themeLabel.textContent = nextTheme === 'dark' ? 'Light' : 'Dark';
+        localStorage.setItem(THEME_KEY, nextTheme);
+      }
+
+      function setSession(value) {
+        isLogged = value;
+        sessionStorage.setItem(SESSION_KEY, String(value));
+        document.getElementById('adminBar').classList.toggle('visible', isLogged);
+        document.getElementById('loginBtn').textContent = isLogged ? 'Painel' : 'Login';
+      }
+
+      function setServerToken(tokenValue) {
+        serverToken = tokenValue || '';
+        if (serverToken) {
+          localStorage.setItem('portfolio-session-token', serverToken);
+        } else {
+          localStorage.removeItem('portfolio-session-token');
+        }
+      }
+
+      function getWhatsAppUrl(phoneNumber = state.profile?.phone || '41996484746') {
+        const digits = String(phoneNumber).replace(/\D/g, '');
+        const normalized = digits.startsWith('55') ? digits : `55${digits.replace(/^0+/, '')}`;
+        const message = 'Olá, fiquei interessado em desenvolvimento de sistema próprio. Gostaria de saber mais sobre o desenvolvimento do sistema e o orçamento.';
+        return `https://wa.me/${normalized}?text=${encodeURIComponent(message)}`;
+      }
+
+      function updateHeader() {
+        const profile = state.profile || {};
+        profile.presentation = profile.presentation || profile.bio || 'Desenvolvedor Full Stack com foco em produto, performance e experiência digital.';
+        const initials = (profile.name || 'Seu Nome').split(' ').filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase() || 'SN';
+        const avatarNode = document.getElementById('avatarInitials');
+
+        document.getElementById('heroName').textContent = profile.name;
+        document.getElementById('heroTitle').textContent = profile.title;
+        document.getElementById('heroBio').textContent = profile.presentation;
+
+        if (profile.logoImage) {
+          avatarNode.innerHTML = `<img src="${profile.logoImage}" alt="${escapeHtml(profile.name || 'Logo do perfil')}" />`;
+        } else {
+          avatarNode.textContent = initials;
+        }
+
+        const whatsappLink = document.getElementById('whatsappLink');
+        const footerWhatsApp = document.getElementById('footerWhatsApp');
+        const emailLink = document.getElementById('emailLink');
+        const whatsappUrl = getWhatsAppUrl(profile.phone);
+        if (whatsappLink) whatsappLink.href = whatsappUrl;
+        if (footerWhatsApp) footerWhatsApp.href = whatsappUrl;
+
+        const emailAddress = (profile.email || 'contato@exemplo.com').trim();
+        const emailSubject = encodeURIComponent('Solicitação de orçamento');
+        const emailBody = encodeURIComponent('Olá, fiquei interessado em desenvolvimento de sistema próprio. Gostaria de saber mais sobre o desenvolvimento e o orçamento.');
+        if (emailLink) emailLink.href = `mailto:${emailAddress}?subject=${emailSubject}&body=${emailBody}`;
+
+        const heroImage = document.getElementById('heroImage');
+        if (heroImage) {
+          heroImage.src = profile.heroImage || 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80';
+          heroImage.alt = `${profile.name || 'Perfil'} | Imagem principal`;
+        }
+
+        document.getElementById('statYears').textContent = profile.years || '4+';
+        document.getElementById('statProjects').textContent = profile.projectsCount || '12';
+        document.getElementById('statClients').textContent = profile.clientsCount || '8';
+
+        document.getElementById('contactEmail').textContent = profile.email;
+        document.getElementById('contactPhone').textContent = profile.phone;
+        document.getElementById('contactCity').textContent = profile.city;
+        document.getElementById('contactGithub').textContent = profile.github;
+        document.getElementById('footerTag').textContent = profile.name;
+
+        const resumeTextNode = document.getElementById('resumeText');
+        if (resumeTextNode) {
+          resumeTextNode.dataset.fullText = state.resume.text || '';
+          resumeTextNode.textContent = '';
+        }
+
+        const actions = [];
+
+        if (state.resume.link) {
+          actions.push(`<a class="btn small" href="${escapeHtml(state.resume.link)}" target="_blank" rel="noreferrer">Baixar currículo</a>`);
+        }
+
+        if (state.resume.pdf) {
+          const pdfName = escapeHtml(state.resume.pdfName || 'curriculo.pdf');
+          actions.push(`<a class="btn small secondary" href="${escapeHtml(state.resume.pdf)}" target="_blank" rel="noreferrer" download="${pdfName}">PDF do currículo</a>`);
+        }
+
+        document.getElementById('resumeActions').innerHTML = actions.join('');
+      }
+
+      function initRevealEffects() {
+        const revealNodes = document.querySelectorAll('.reveal');
+        revealNodes.forEach((node, index) => {
+          node.style.transitionDelay = `${Math.min(index * 90, 360)}ms`;
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+
+        revealNodes.forEach((node) => observer.observe(node));
+      }
+
+      function renderSkills() {
+        const skillsGrid = document.getElementById('skillsGrid');
+        const accentColors = ['#60a5fa', '#67e8f9', '#a78bfa', '#f472b6'];
+
+        skillsGrid.innerHTML = state.skills.map((skill, index) => {
+          const idea = skill.idea || 'Foco em clareza, performance e experiência de uso.';
+          const techList = (skill.stack && skill.stack.length ? skill.stack : ['Produto', 'Tecnologia', 'Estratégia'])
+            .map((tag) => `<span>${escapeHtml(tag)}</span>`)
+            .join('');
+
+          return `
+            <article class="skill-card reveal" style="--skill-accent: ${accentColors[index % accentColors.length]};">
+              <div class="skill-card-header">
+                <div class="icon">${escapeHtml(skill.icon || '✦')}</div>
+                <span class="skill-index">0${index + 1}</span>
+              </div>
+              <h3>${escapeHtml(skill.title)}</h3>
+              <p class="skill-idea">${escapeHtml(idea)}</p>
+              <p>${escapeHtml(skill.text)}</p>
+              <div class="tech-list">${techList}</div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      function renderProjects() {
+        const projectsGrid = document.getElementById('projectsGrid');
+        projectsGrid.innerHTML = state.projects.map((project, index) => {
+          const previewUrl = project.url && /^https?:\/\//i.test(project.url) ? project.url : '';
+          const imageMarkup = project.image
+            ? `<img src="${project.image}" alt="${escapeHtml(project.title)}" loading="lazy" />`
+            : `<div class="placeholder">${escapeHtml(project.title || 'Preview do projeto')}</div>`;
+
+          const tags = (project.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+
+          return `
+            <article class="project-card reveal" data-tilt>
+              <div class="project-visual">
+                ${imageMarkup}
+                ${previewUrl ? '<span class="preview-badge">Preview</span>' : ''}
+              </div>
+              <h3>${escapeHtml(project.title)}</h3>
+              <p>${escapeHtml(project.description)}</p>
+              <div class="project-tags">${tags}</div>
+              <div class="project-actions">
+                ${project.url ? `<a class="btn small" href="${escapeHtml(project.url)}" target="_blank" rel="noreferrer">Visitar</a>` : ''}
+                ${project.repo ? `<a class="btn small secondary" href="${escapeHtml(project.repo)}" target="_blank" rel="noreferrer">Código</a>` : ''}
+                ${isLogged ? `<button type="button" class="btn small" data-action="edit-project" data-index="${index}">Editar</button>` : ''}
+                ${isLogged ? `<button type="button" class="btn small secondary" data-action="delete-project" data-index="${index}">Excluir</button>` : ''}
+              </div>
+            </article>
+          `;
+        }).join('');
+      }
+
+      let cursorInitialized = false;
+      let typewriterTimer = null;
+      let resumeTypewriterTimer = null;
+      let scrollProgressInitialized = false;
+      let heroCarouselTimer = null;
+      let typewriterSequence = [];
+      let uiAudioContext = null;
+
+      function ensureUiAudio() {
+        const AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtor) return null;
+
+        if (!uiAudioContext) {
+          uiAudioContext = new AudioCtor();
+        }
+
+        if (uiAudioContext.state === 'suspended') {
+          uiAudioContext.resume();
+        }
+
+        return uiAudioContext;
+      }
+
+      function playUiTone({ frequency = 420, duration = 0.08, type = 'triangle', gain = 0.015, endFrequency = null }) {
+        const context = ensureUiAudio();
+        if (!context) return;
+
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, context.currentTime);
+        if (endFrequency) {
+          oscillator.frequency.exponentialRampToValueAtTime(endFrequency, context.currentTime + duration);
+        }
+
+        gainNode.gain.setValueAtTime(0.0001, context.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(gain, context.currentTime + 0.008);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + duration);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+
+        oscillator.start();
+        oscillator.stop(context.currentTime + duration);
+      }
+
+      function setupInteractionSound() {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) return;
+
+        const interactiveElements = document.querySelectorAll('.skill-card, .project-card, .btn, a, button');
+        interactiveElements.forEach((element) => {
+          if (element.dataset.soundBound === 'true') return;
+          element.dataset.soundBound = 'true';
+
+          element.addEventListener('pointerenter', () => {
+            playUiTone({
+              frequency: 420 + Math.random() * 180,
+              duration: 0.045,
+              type: 'triangle',
+              gain: 0.008,
+              endFrequency: 640
+            });
+          }, { passive: true });
+
+          element.addEventListener('click', () => {
+            playUiTone({
+              frequency: 560,
+              duration: 0.08,
+              type: 'sine',
+              gain: 0.013,
+              endFrequency: 800
+            });
+          }, { passive: true });
+        });
+      }
+
+      function setupCursor() {
+        if (cursorInitialized) return;
+
+        const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+        if (!isFinePointer) return;
+
+        cursorInitialized = true;
+
+        const cursor = document.getElementById('cursorGlow');
+        if (!cursor) return;
+
+        document.body.classList.add('has-cursor');
+        cursor.style.opacity = '1';
+
+        const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+        const current = { x: target.x, y: target.y };
+
+        const move = (event) => {
+          target.x = event.clientX;
+          target.y = event.clientY;
+          cursor.style.opacity = '1';
+        };
+
+        document.addEventListener('pointermove', move, { passive: true });
+        document.addEventListener('pointerdown', () => cursor.classList.add('active'));
+        document.addEventListener('pointerup', () => cursor.classList.remove('active'));
+        document.addEventListener('pointerleave', () => {
+          cursor.style.opacity = '0';
+        });
+
+        const render = () => {
+          current.x += (target.x - current.x) * 0.28;
+          current.y += (target.y - current.y) * 0.28;
+          cursor.style.transform = `translate(${current.x - 18}px, ${current.y - 18}px)`;
+          requestAnimationFrame(render);
+        };
+
+        requestAnimationFrame(render);
+      }
+
+      function setupHeroCarousel() {
+        const cards = Array.from(document.querySelectorAll('.mini-card'));
+        if (!cards.length || heroCarouselTimer) return;
+
+        let index = 0;
+        heroCarouselTimer = setInterval(() => {
+          cards.forEach((card, cardIndex) => {
+            card.classList.toggle('active', cardIndex === index);
+          });
+          index = (index + 1) % cards.length;
+        }, 2600);
+      }
+
+      function setupTiltCards() {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) return;
+
+        const cards = document.querySelectorAll('[data-tilt]');
+        cards.forEach((card) => {
+          card.style.willChange = 'transform';
+
+          card.addEventListener('pointermove', (event) => {
+            const rect = card.getBoundingClientRect();
+            const px = (event.clientX - rect.left) / rect.width;
+            const py = (event.clientY - rect.top) / rect.height;
+            const rotateY = (px - 0.5) * 12;
+            const rotateX = (0.5 - py) * 12;
+            card.style.setProperty('--rx', `${rotateX}deg`);
+            card.style.setProperty('--ry', `${rotateY}deg`);
+            card.style.setProperty('--x', `${px * 100}%`);
+            card.style.setProperty('--y', `${py * 100}%`);
+          }, { passive: true });
+
+          card.addEventListener('pointerleave', () => {
+            card.style.setProperty('--rx', '0deg');
+            card.style.setProperty('--ry', '0deg');
+            card.style.setProperty('--x', '50%');
+            card.style.setProperty('--y', '50%');
+          });
+        });
+      }
+
+      function setupScrollProgress() {
+        const progress = document.getElementById('scrollProgress');
+        if (!progress || scrollProgressInitialized) return;
+        scrollProgressInitialized = true;
+
+        const update = () => {
+          const max = document.documentElement.scrollHeight - window.innerHeight;
+          const percent = max > 0 ? (window.scrollY / max) * 100 : 0;
+          progress.style.transform = `scaleX(${percent / 100})`;
+        };
+
+        update();
+        window.addEventListener('scroll', update, { passive: true });
+      }
+
+      function setupTypewriter() {
+        const node = document.getElementById('heroBio');
+        if (!node) return;
+
+        const profileText = (state.profile?.presentation || state.profile?.bio || defaultData.profile.presentation || '').trim();
+        const phrases = profileText ? [profileText] : [defaultData.profile.presentation];
+
+        if (typewriterTimer) {
+          clearTimeout(typewriterTimer);
+        }
+
+        typewriterSequence = phrases;
+        let phraseIndex = 0;
+        let charIndex = 0;
+        let deleting = false;
+
+        const tick = () => {
+          const current = typewriterSequence[phraseIndex];
+          if (!current) return;
+
+          const visible = deleting ? current.slice(0, charIndex--) : current.slice(0, charIndex++);
+          node.textContent = visible;
+
+          if (!deleting && charIndex > current.length) {
+            deleting = true;
+            typewriterTimer = setTimeout(tick, 1400);
+            return;
+          }
+
+          if (deleting && charIndex < 0) {
+            deleting = false;
+            phraseIndex = (phraseIndex + 1) % typewriterSequence.length;
+            charIndex = 0;
+            node.textContent = typewriterSequence[phraseIndex];
+          }
+
+          const speed = deleting ? 28 : 52;
+          typewriterTimer = setTimeout(tick, speed);
+        };
+
+        node.textContent = '';
+        tick();
+      }
+
+      function setupResumeTypewriter() {
+        const node = document.getElementById('resumeText');
+        if (!node) return;
+
+        const text = (state.resume?.text || defaultData.resume.text || '').trim();
+        if (!text) return;
+
+        if (resumeTypewriterTimer) {
+          clearTimeout(resumeTypewriterTimer);
+        }
+
+        let index = 0;
+
+        const tick = () => {
+          node.textContent = text.slice(0, index);
+          index += 1;
+
+          if (index <= text.length) {
+            resumeTypewriterTimer = setTimeout(tick, 16);
+            return;
+          }
+
+          node.textContent = text;
+        };
+
+        node.textContent = '';
+        tick();
+      }
+
+      async function fetchSiteData() {
+        try {
+          const response = await fetch('/api/site');
+          if (!response.ok) throw new Error('unable to load');
+          const payload = await response.json();
+          state = payload || JSON.parse(JSON.stringify(defaultData));
+          saveState();
+        } catch {
+          state = JSON.parse(JSON.stringify(defaultData));
+        }
+        render();
+      }
+
+      async function saveSiteData() {
+        if (!serverToken) return;
+
+        try {
+          const response = await fetch('/api/admin/site', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${serverToken}`
+            },
+            body: JSON.stringify(state)
+          });
+
+          if (response.status === 401) {
+            handleLogout();
+            return;
+          }
+
+          if (!response.ok) throw new Error('save failed');
+          const result = await response.json();
+          state = result.data || state;
+        } catch (error) {
+          console.error(error);
+          alert('Não foi possível salvar as alterações.');
+        }
+      }
+
+      function render() {
+        updateHeader();
+        renderSkills();
+        renderProjects();
+        setSession(isLogged);
+        document.getElementById('year').textContent = String(new Date().getFullYear());
+        initRevealEffects();
+        setupTiltCards();
+        setupCursor();
+        setupInteractionSound();
+        setupScrollProgress();
+        setupTypewriter();
+        setupResumeTypewriter();
+        setupHeroCarousel();
+      }
+
+      function openModal(title, formHtml, submitHandler) {
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <div class="modal-card">
+            <h3>${escapeHtml(title)}</h3>
+            <form id="modalForm">
+              <div class="form-grid">${formHtml}</div>
+              <div class="modal-actions">
+                <button type="button" class="btn small secondary" data-close="true">Cancelar</button>
+                <button type="submit" class="btn small">Salvar</button>
+              </div>
+            </form>
+          </div>
+        `;
+
+        modal.querySelector('[data-close="true"]').addEventListener('click', () => modal.remove());
+        modal.querySelector('#modalForm').addEventListener('submit', (event) => {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const formData = new FormData(form);
+          submitHandler(formData, form);
+          modal.remove();
+        });
+
+        document.body.appendChild(modal);
+      }
+
+      function openProfileEditor() {
+        const profile = state.profile;
+        const fields = `
+          <div class="field"><label>Nome</label><input name="name" value="${escapeHtml(profile.name)}" /></div>
+          <div class="field"><label>Cargo</label><input name="title" value="${escapeHtml(profile.title)}" /></div>
+          <div class="field"><label>Apresentação</label><textarea name="presentation">${escapeHtml(profile.presentation || profile.bio || '')}</textarea></div>
+          <div class="field"><label>Resumo</label><textarea name="bio">${escapeHtml(profile.bio)}</textarea></div>
+          <div class="field"><label>Email</label><input name="email" value="${escapeHtml(profile.email)}" /></div>
+          <div class="field"><label>Telefone</label><input name="phone" value="${escapeHtml(profile.phone)}" /></div>
+          <div class="field"><label>Cidade</label><input name="city" value="${escapeHtml(profile.city)}" /></div>
+          <div class="field"><label>GitHub</label><input name="github" value="${escapeHtml(profile.github)}" /></div>
+          <div class="field"><label>Anos</label><input name="years" value="${escapeHtml(profile.years || '4+')}" /></div>
+          <div class="field"><label>Projetos</label><input name="projectsCount" value="${escapeHtml(profile.projectsCount || '12')}" /></div>
+          <div class="field"><label>Clientes</label><input name="clientsCount" value="${escapeHtml(profile.clientsCount || '8')}" /></div>
+          <div class="field"><label>Logo / avatar (opcional)</label><input name="logoImage" type="file" accept="image/*" /></div>
+          <div class="field"><label>Foto principal (URL ou upload)</label><input name="heroImage" type="file" accept="image/*" /></div>
+        `;
+
+        openModal('Editar perfil', fields, async (formData) => {
+          const logoFile = formData.get('logoImage');
+          const heroFile = formData.get('heroImage');
+          const logoData = logoFile && logoFile.name ? await readImageFile(logoFile) : (profile.logoImage || '');
+          const imageData = heroFile && heroFile.name ? await readImageFile(heroFile) : (profile.heroImage || 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80');
+
+          const presentation = String(formData.get('presentation') || '').trim();
+          const bio = String(formData.get('bio') || '').trim();
+
+          state.profile = {
+            name: String(formData.get('name') || '').trim() || 'Seu Nome',
+            title: String(formData.get('title') || '').trim() || 'Desenvolvedor',
+            presentation: presentation || bio || 'Desenvolvedor Full Stack com foco em produto, performance e experiência digital.',
+            bio: bio || presentation || 'Sou desenvolvedor focado em criar experiências digitais modernas, funcionalidade clara e interfaces que entregam valor real para pessoas e negócios.',
+            email: String(formData.get('email') || '').trim(),
+            phone: String(formData.get('phone') || '').trim(),
+            city: String(formData.get('city') || '').trim(),
+            github: String(formData.get('github') || '').trim(),
+            heroImage: imageData,
+            logoImage: logoData,
+            years: String(formData.get('years') || '').trim() || '4+',
+            projectsCount: String(formData.get('projectsCount') || '').trim() || '12',
+            clientsCount: String(formData.get('clientsCount') || '').trim() || '8'
+          };
+          saveSiteData();
+          render();
+        });
+      }
+
+      function openSkillsEditor() {
+        const skillFields = state.skills.map((skill, index) => `
+          <div style="display:grid; gap:12px; padding:18px; border:1px solid var(--line); border-radius:16px; background:rgba(15,23,42,0.32);">
+            <div class="field"><label>Habilidade ${index + 1}</label><input name="skill-title-${index}" value="${escapeHtml(skill.title || '')}" /></div>
+            <div class="field"><label>Ícone</label><input name="skill-icon-${index}" value="${escapeHtml(skill.icon || '')}" /></div>
+            <div class="field"><label>Ideia da tecnologia</label><textarea name="skill-idea-${index}">${escapeHtml(skill.idea || '')}</textarea></div>
+            <div class="field"><label>Descrição</label><textarea name="skill-text-${index}">${escapeHtml(skill.text || '')}</textarea></div>
+            <div class="field"><label>Tecnologias</label><input name="skill-stack-${index}" value="${escapeHtml((skill.stack || []).join(', '))}" /></div>
+          </div>
+        `).join('');
+
+        openModal('Editar habilidades', skillFields, (formData) => {
+          state.skills = state.skills.map((skill, index) => ({
+            ...skill,
+            title: String(formData.get(`skill-title-${index}`) || '').trim() || skill.title || 'Habilidade',
+            icon: String(formData.get(`skill-icon-${index}`) || '').trim() || skill.icon || '✦',
+            idea: String(formData.get(`skill-idea-${index}`) || '').trim() || skill.idea || 'Foco em clareza, performance e experiência de uso.',
+            text: String(formData.get(`skill-text-${index}`) || '').trim() || skill.text || 'Descrição da habilidade.',
+            stack: String(formData.get(`skill-stack-${index}`) || '')
+              .split(',')
+              .map((item) => item.trim())
+              .filter(Boolean) || skill.stack || ['Produto']
+          }));
+
+          saveSiteData();
+          render();
+        });
+      }
+
+      function openResumeEditor() {
+        const resume = state.resume;
+        const pdfStatus = resume.pdf
+          ? `<div class="field"><label>PDF atual</label><div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border:1px solid rgba(103,232,249,0.2); border-radius:12px; background:rgba(15,23,42,0.5);"><span>${escapeHtml(resume.pdfName || 'curriculo.pdf')}</span><label style="display:flex; align-items:center; gap:8px;"><input type="checkbox" name="removePdf" value="true" /> Remover</label></div></div>`
+          : '';
+
+        const fields = `
+          <div class="field"><label>Texto do currículo</label><textarea name="text">${escapeHtml(resume.text)}</textarea></div>
+          <div class="field"><label>Link externo do currículo (opcional)</label><input name="link" value="${escapeHtml(resume.link)}" placeholder="https://..." /></div>
+          <div class="field"><label>Arquivo PDF do currículo</label><input name="pdf" type="file" accept="application/pdf" /></div>
+          ${pdfStatus}
+        `;
+
+        openModal('Editar currículo', fields, async (formData) => {
+          const file = formData.get('pdf');
+          const removePdf = formData.get('removePdf') === 'true';
+          const fileData = file && file.name ? await readFileAsDataUrl(file) : resume.pdf || '';
+
+          state.resume = {
+            text: String(formData.get('text') || '').trim(),
+            link: String(formData.get('link') || '').trim(),
+            pdf: removePdf ? '' : fileData,
+            pdfName: removePdf ? 'curriculo.pdf' : (file && file.name ? file.name : resume.pdfName || 'curriculo.pdf')
+          };
+          saveSiteData();
+          render();
+        });
+      }
+
+      function openProjectEditor(index = null) {
+        const project = index !== null ? state.projects[index] : {
+          title: '',
+          description: '',
+          url: '',
+          repo: '',
+          image: '',
+          tags: []
+        };
+
+        const fields = `
+          <div class="field"><label>Título</label><input name="title" value="${escapeHtml(project.title || '')}" /></div>
+          <div class="field"><label>Descrição</label><textarea name="description">${escapeHtml(project.description || '')}</textarea></div>
+          <div class="field"><label>Link do site para prévia</label><input name="url" value="${escapeHtml(project.url || '')}" placeholder="https://exemplo.com" /></div>
+          <div class="field"><label>Repositório</label><input name="repo" value="${escapeHtml(project.repo || '')}" /></div>
+          <div class="field"><label>Tags (separadas por vírgula)</label><input name="tags" value="${escapeHtml((project.tags || []).join(', '))}" /></div>
+          <div class="field"><label>Imagem alternativa</label><input name="image" type="file" accept="image/*" /></div>
+        `;
+
+        openModal(index === null ? 'Novo projeto' : 'Editar projeto', fields, async (formData) => {
+          const file = formData.get('image');
+          const image = file && file.name ? await readImageFile(file) : project.image || '';
+
+          const newProject = {
+            title: String(formData.get('title') || '').trim() || 'Novo projeto',
+            description: String(formData.get('description') || '').trim(),
+            url: String(formData.get('url') || '').trim(),
+            repo: String(formData.get('repo') || '').trim(),
+            image,
+            tags: String(formData.get('tags') || '').split(',').map(tag => tag.trim()).filter(Boolean)
+          };
+
+          if (index === null) {
+            state.projects.push(newProject);
+          } else {
+            state.projects[index] = newProject;
+          }
+
+          saveSiteData();
+          render();
+        });
+      }
+
+      function openAccountEditor() {
+        const fields = `
+          <div class="field"><label>Usuário</label><input name="username" value="${escapeHtml(account.username)}" /></div>
+          <div class="field"><label>Senha</label><input name="password" type="password" value="${escapeHtml(account.password)}" /></div>
+        `;
+
+        openModal('Configurar conta', fields, async (formData) => {
+          const username = String(formData.get('username') || '').trim() || 'admin';
+          const password = String(formData.get('password') || '').trim() || 'admin123';
+
+          account = { username, password };
+          saveAccount();
+
+          if (serverToken) {
+            try {
+              await fetch('/api/admin/account', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${serverToken}`
+                },
+                body: JSON.stringify({ username, password })
+              });
+            } catch {}
+          }
+
+          alert('Conta atualizada com sucesso.');
+        });
+      }
+
+      function handleLogin() {
+        const fields = `
+          <div class="field"><label>Usuário</label><input name="username" /></div>
+          <div class="field"><label>Senha</label><input name="password" type="password" /></div>
+        `;
+
+        openModal('Login do painel', fields, async (formData) => {
+          const username = String(formData.get('username') || '').trim();
+          const password = String(formData.get('password') || '').trim();
+
+          try {
+            const response = await fetch('/api/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            if (!response.ok) {
+              alert(result.error || 'Credenciais inválidas.');
+              return;
+            }
+
+            setServerToken(result.token);
+            setSession(true);
+            render();
+          } catch {
+            alert('Não foi possível entrar no painel.');
+          }
+        });
+      }
+
+      async function handleLogout() {
+        if (serverToken) {
+          try {
+            await fetch('/api/admin/logout', {
+              method: 'DELETE',
+              headers: { 'Authorization': `Bearer ${serverToken}` }
+            });
+          } catch {}
+        }
+
+        setServerToken('');
+        setSession(false);
+      }
+
+      document.getElementById('loginBtn').addEventListener('click', () => {
+        if (isLogged) {
+          setSession(false);
+          return;
+        }
+        handleLogin();
+      });
+
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(nextTheme);
+      });
+
+      const savedTheme = localStorage.getItem(THEME_KEY) || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      applyTheme(savedTheme);
+
+      document.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-action]');
+        if (!button) return;
+
+        const action = button.dataset.action;
+
+        if (action === 'edit-profile') openProfileEditor();
+        if (action === 'edit-skills') openSkillsEditor();
+        if (action === 'edit-resume') openResumeEditor();
+        if (action === 'new-project') openProjectEditor();
+        if (action === 'edit-account') openAccountEditor();
+        if (action === 'logout') handleLogout();
+
+        if (action === 'edit-project') {
+          const index = Number(button.dataset.index);
+          openProjectEditor(index);
+        }
+
+        if (action === 'delete-project') {
+          const index = Number(button.dataset.index);
+          if (confirm('Deseja remover este projeto?')) {
+            state.projects.splice(index, 1);
+            saveSiteData();
+            render();
+          }
+        }
+      });
+
+      if (serverToken) {
+        isLogged = true;
+      }
+
+      fetchSiteData();
+    </script>
+  </body>
+</html>
+
