@@ -9,7 +9,7 @@
     "vercel-build": "node -e \"console.log('Vercel build ok')\""
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "dependencies": {
     "@neon/config": "^1.9.5",
