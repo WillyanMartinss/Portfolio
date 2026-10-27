@@ -1,8 +1,17 @@
 const express = require('express');
 const crypto = require('crypto');
 const path = require('path');
+const dotenv = require('dotenv');
 const { DatabaseSync } = require('node:sqlite');
 const { Pool } = require('pg');
+
+const envPath = path.resolve(__dirname, '.env.local');
+const fallbackEnvPath = path.resolve(__dirname, '.env');
+if (require('fs').existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+} else if (require('fs').existsSync(fallbackEnvPath)) {
+  dotenv.config({ path: fallbackEnvPath });
+}
 
 const app = express();
 const PORT = process.env.PORT || 8000;
