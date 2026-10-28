@@ -1025,6 +1025,31 @@
         transition: transform 0.25s ease, box-shadow 0.25s ease;
       }
 
+      .project-card.device-mobile .project-visual {
+        width: min(220px, 100%);
+        height: 360px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 28px;
+        aspect-ratio: 9 / 16;
+      }
+
+      .project-card.device-tablet .project-visual {
+        width: min(92%, 520px);
+        height: 320px;
+        margin-left: auto;
+        margin-right: auto;
+        border-radius: 22px;
+        aspect-ratio: 4 / 3;
+      }
+
+      .project-card.device-notebook .project-visual {
+        width: 100%;
+        height: 360px;
+        border-radius: 18px 18px 26px 26px;
+        aspect-ratio: 16 / 10;
+      }
+
       :root[data-theme="light"] .project-visual {
         background: rgba(255, 255, 255, 0.96);
         border-color: rgba(15, 23, 42, 0.12);
@@ -1100,6 +1125,10 @@
         margin-top: 12px;
       }
 
+      .project-gallery-thumb-wrap {
+        position: relative;
+      }
+
       .project-gallery-thumb {
         width: 100%;
         height: 56px;
@@ -1120,6 +1149,24 @@
 
       .project-gallery-thumb:hover {
         border-color: rgba(103, 232, 249, 0.7);
+      }
+
+      .project-gallery-delete {
+        position: absolute;
+        right: 4px;
+        bottom: 4px;
+        width: 22px;
+        height: 22px;
+        display: grid;
+        place-items: center;
+        border: 1px solid rgba(248, 113, 113, 0.7);
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.8);
+        color: #fecaca;
+        font-size: 0.8rem;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 2;
       }
 
       .image-lightbox {
@@ -1885,6 +1932,7 @@
           const projectImages = getProjectImages(project);
           const previewUrl = project.url && /^https?:\/\//i.test(project.url) ? project.url : '';
           const primaryImage = projectImages[0];
+          const deviceMode = project.device || 'notebook';
           const imageMarkup = primaryImage
             ? `<img src="${primaryImage}" alt="${escapeHtml(project.title)}" loading="lazy" />`
             : `<div class="placeholder">${escapeHtml(project.title || 'Preview do projeto')}</div>`;
@@ -1892,14 +1940,17 @@
           const tags = (project.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
           const galleryStrip = projectImages.length > 1
             ? `<div class="project-gallery-strip">${projectImages.slice(0, 4).map((image, imageIndex) => `
-                <button type="button" class="project-gallery-thumb" data-action="open-project-gallery" data-project-index="${index}" data-image-index="${imageIndex}" aria-label="Ver imagem ${imageIndex + 1}">
-                  <img src="${image}" alt="${escapeHtml(project.title)}" loading="lazy" />
-                </button>
+                <div class="project-gallery-thumb-wrap">
+                  <button type="button" class="project-gallery-thumb" data-action="open-project-gallery" data-project-index="${index}" data-image-index="${imageIndex}" aria-label="Ver imagem ${imageIndex + 1}">
+                    <img src="${image}" alt="${escapeHtml(project.title)}" loading="lazy" />
+                  </button>
+                  ${isLogged ? `<button type="button" class="project-gallery-delete" data-action="remove-project-image" data-project-index="${index}" data-image-index="${imageIndex}" aria-label="Excluir imagem">×</button>` : ''}
+                </div>
               `).join('')}</div>`
             : '';
 
           return `
-            <article class="project-card reveal" data-tilt>
+            <article class="project-card reveal device-${deviceMode}" data-tilt>
               <div class="project-visual" data-action="open-project-gallery" data-project-index="${index}" data-image-index="0" style="cursor:pointer;">
                 ${imageMarkup}
                 ${previewUrl ? '<span class="preview-badge">Preview</span>' : ''}
@@ -2117,6 +2168,7 @@
         });
 
         document.body.appendChild(modal);
+        return modal;
       }
 
       function openProfileEditor() {
@@ -2279,36 +2331,59 @@
           repo: '',
           image: '',
           images: [],
+          device: 'notebook',
           tags: []
         };
         const existingImages = Array.isArray(project.images) && project.images.length
           ? project.images
           : (project.image ? [project.image] : []);
+        const projectDevice = project.device || 'notebook';
+        let projectImagesState = [...existingImages];
 
-        const imagePreview = existingImages.length
-          ? `<div class="project-gallery-strip">${existingImages.slice(0, 4).map((image) => `
-              <div class="project-gallery-thumb" style="height:64px; width:100%; cursor:default;">
-                <img src="${image}" alt="Prévia" />
-              </div>
-            `).join('')}</div>`
-          : '';
+        const renderImageList = (modalNode) => {
+          const previewNode = modalNode.querySelector('[data-image-list="project"]');
+          if (!previewNode) return;
+
+          previewNode.innerHTML = projectImagesState.length
+            ? projectImagesState.map((image, imageIndex) => `
+                <div class="project-gallery-thumb" style="position:relative; height:64px; width:100%; cursor:default;">
+                  <img src="${image}" alt="Prévia" />
+                  <button type="button" class="btn small secondary" data-remove-existing-image="${imageIndex}" style="position:absolute; right:6px; bottom:6px; padding:4px 7px; border-radius:999px; font-size:0.65rem;">x</button>
+                </div>
+              `).join('')
+            : '<div style="padding:10px 12px; border:1px dashed rgba(103,232,249,0.3); border-radius:12px; color: var(--muted);">Sem imagens salvas</div>';
+
+          previewNode.querySelectorAll('[data-remove-existing-image]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const targetIndex = Number(button.dataset.removeExistingImage);
+              projectImagesState.splice(targetIndex, 1);
+              renderImageList(modalNode);
+            });
+          });
+        };
 
         const fields = `
           <div class="field"><label>Título</label><input name="title" value="${escapeHtml(project.title || '')}" /></div>
           <div class="field"><label>Descrição</label><textarea name="description">${escapeHtml(project.description || '')}</textarea></div>
           <div class="field"><label>Link do site para prévia</label><input name="url" value="${escapeHtml(project.url || '')}" placeholder="https://exemplo.com" /></div>
           <div class="field"><label>Repositório</label><input name="repo" value="${escapeHtml(project.repo || '')}" /></div>
+          <div class="field"><label>Formato do preview</label>
+            <select name="device">
+              <option value="mobile" ${projectDevice === 'mobile' ? 'selected' : ''}>Mobile</option>
+              <option value="tablet" ${projectDevice === 'tablet' ? 'selected' : ''}>Tablet</option>
+              <option value="notebook" ${projectDevice === 'notebook' ? 'selected' : ''}>Notebook</option>
+            </select>
+          </div>
           <div class="field"><label>Tags (separadas por vírgula)</label><input name="tags" value="${escapeHtml((project.tags || []).join(', '))}" /></div>
           <div class="field"><label>Imagens do projeto (várias)</label><input name="images" type="file" accept="image/*" multiple /></div>
-          ${imagePreview ? `<div class="field"><label>Imagens atuais</label>${imagePreview}</div>` : ''}
+          <div class="field"><label>Imagens atuais</label><div data-image-list="project" class="project-gallery-strip"></div></div>
         `;
 
-        openModal(index === null ? 'Novo projeto' : 'Editar projeto', fields, async (formData) => {
+        const modal = openModal(index === null ? 'Novo projeto' : 'Editar projeto', fields, async (formData) => {
           const uploadedFiles = Array.from(formData.getAll('images')).filter(Boolean);
-          const uploadedImages = uploadedFiles.length ? await readMultipleImages(uploadedFiles) : existingImages;
-
-          const normalizedImages = uploadedImages.filter(Boolean);
-          const primaryImage = normalizedImages[0] || project.image || '';
+          const uploadedImages = uploadedFiles.length ? await readMultipleImages(uploadedFiles) : [];
+          const normalizedImages = [...projectImagesState, ...uploadedImages].filter(Boolean);
+          const primaryImage = normalizedImages[0] || '';
 
           const newProject = {
             title: String(formData.get('title') || '').trim() || 'Novo projeto',
@@ -2317,6 +2392,7 @@
             repo: String(formData.get('repo') || '').trim(),
             image: primaryImage,
             images: normalizedImages,
+            device: String(formData.get('device') || 'notebook').trim() || 'notebook',
             tags: String(formData.get('tags') || '').split(',').map(tag => tag.trim()).filter(Boolean)
           };
 
@@ -2329,6 +2405,8 @@
           saveSiteData();
           render();
         });
+
+        renderImageList(modal);
       }
 
       function openAccountEditor() {
@@ -2439,6 +2517,22 @@
           const projectIndex = Number(button.dataset.projectIndex ?? button.dataset.index ?? 0);
           const imageIndex = Number(button.dataset.imageIndex ?? 0);
           openProjectGallery(projectIndex, imageIndex);
+        }
+        if (action === 'remove-project-image') {
+          const projectIndex = Number(button.dataset.projectIndex ?? 0);
+          const imageIndex = Number(button.dataset.imageIndex ?? 0);
+          const project = state.projects[projectIndex];
+          if (!project) return;
+
+          const currentImages = Array.isArray(project.images) && project.images.length ? project.images : (project.image ? [project.image] : []);
+          currentImages.splice(imageIndex, 1);
+          const nextImages = currentImages.filter(Boolean);
+          project.images = nextImages;
+          project.image = nextImages[0] || '';
+
+          saveSiteData();
+          render();
+          return;
         }
 
         if (action === 'edit-project') {
