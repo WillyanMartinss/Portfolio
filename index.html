@@ -1043,11 +1043,24 @@
         aspect-ratio: 4 / 3;
       }
 
-      .project-card.device-notebook .project-visual {
+      .project-card.device-notebook .project-visual,
+      .project-card.device-desktop .project-visual {
         width: 100%;
         height: 360px;
         border-radius: 18px 18px 26px 26px;
         aspect-ratio: 16 / 10;
+      }
+
+      .project-card.device-desktop .project-visual img,
+      .project-card.device-notebook .project-visual img {
+        object-fit: contain;
+        object-position: center;
+        background: rgba(8, 19, 29, 0.9);
+      }
+
+      .project-card.device-mobile .project-visual img,
+      .project-card.device-tablet .project-visual img {
+        object-fit: cover;
       }
 
       :root[data-theme="light"] .project-visual {
@@ -1745,6 +1758,15 @@
         return [];
       }
 
+      function getPrimaryProjectImage(project) {
+        const images = getProjectImages(project);
+        if (!images.length) return '';
+        if (project && project.image && images.includes(project.image)) {
+          return project.image;
+        }
+        return images[0];
+      }
+
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -1931,8 +1953,9 @@
         projectsGrid.innerHTML = state.projects.map((project, index) => {
           const projectImages = getProjectImages(project);
           const previewUrl = project.url && /^https?:\/\//i.test(project.url) ? project.url : '';
-          const primaryImage = projectImages[0];
-          const deviceMode = project.device || 'notebook';
+          const primaryImage = getPrimaryProjectImage(project);
+          const deviceMode = project.device || 'desktop';
+          const primaryImageIndex = projectImages.indexOf(primaryImage);
           const imageMarkup = primaryImage
             ? `<img src="${primaryImage}" alt="${escapeHtml(project.title)}" loading="lazy" />`
             : `<div class="placeholder">${escapeHtml(project.title || 'Preview do projeto')}</div>`;
@@ -1945,13 +1968,14 @@
                     <img src="${image}" alt="${escapeHtml(project.title)}" loading="lazy" />
                   </button>
                   ${isLogged ? `<button type="button" class="project-gallery-delete" data-action="remove-project-image" data-project-index="${index}" data-image-index="${imageIndex}" aria-label="Excluir imagem">×</button>` : ''}
+                  ${isLogged ? `<button type="button" class="project-gallery-delete" data-action="set-project-primary-image" data-project-index="${index}" data-image-index="${imageIndex}" aria-label="Definir como principal" style="right: 30px; border-color: rgba(103,232,249,0.7); color: #cffafe;">★</button>` : ''}
                 </div>
               `).join('')}</div>`
             : '';
 
           return `
             <article class="project-card reveal device-${deviceMode}" data-tilt>
-              <div class="project-visual" data-action="open-project-gallery" data-project-index="${index}" data-image-index="0" style="cursor:pointer;">
+              <div class="project-visual" data-action="open-project-gallery" data-project-index="${index}" data-image-index="${primaryImageIndex >= 0 ? primaryImageIndex : 0}" style="cursor:pointer;">
                 ${imageMarkup}
                 ${previewUrl ? '<span class="preview-badge">Preview</span>' : ''}
               </div>
@@ -1962,7 +1986,7 @@
               <div class="project-actions">
                 ${project.url ? `<a class="btn small" href="${escapeHtml(project.url)}" target="_blank" rel="noreferrer">Visitar</a>` : ''}
                 ${project.repo ? `<a class="btn small secondary" href="${escapeHtml(project.repo)}" target="_blank" rel="noreferrer">Código</a>` : ''}
-                ${projectImages.length > 1 ? `<button type="button" class="btn small secondary" data-action="open-project-gallery" data-project-index="${index}" data-image-index="0">Expandir</button>` : ''}
+                ${projectImages.length > 1 ? `<button type="button" class="btn small secondary" data-action="open-project-gallery" data-project-index="${index}" data-image-index="${primaryImageIndex >= 0 ? primaryImageIndex : 0}">Expandir</button>` : ''}
                 ${isLogged ? `<button type="button" class="btn small" data-action="edit-project" data-index="${index}">Editar</button>` : ''}
                 ${isLogged ? `<button type="button" class="btn small secondary" data-action="delete-project" data-index="${index}">Excluir</button>` : ''}
               </div>
@@ -2331,13 +2355,13 @@
           repo: '',
           image: '',
           images: [],
-          device: 'notebook',
+          device: 'desktop',
           tags: []
         };
         const existingImages = Array.isArray(project.images) && project.images.length
           ? project.images
           : (project.image ? [project.image] : []);
-        const projectDevice = project.device || 'notebook';
+        const projectDevice = project.device || 'desktop';
         let projectImagesState = [...existingImages];
 
         const renderImageList = (modalNode) => {
@@ -2346,9 +2370,12 @@
 
           previewNode.innerHTML = projectImagesState.length
             ? projectImagesState.map((image, imageIndex) => `
-                <div class="project-gallery-thumb" style="position:relative; height:64px; width:100%; cursor:default;">
-                  <img src="${image}" alt="Prévia" />
-                  <button type="button" class="btn small secondary" data-remove-existing-image="${imageIndex}" style="position:absolute; right:6px; bottom:6px; padding:4px 7px; border-radius:999px; font-size:0.65rem;">x</button>
+                <div class="project-gallery-thumb-wrap" style="position:relative;">
+                  <div class="project-gallery-thumb" style="height:64px; width:100%; cursor:default;">
+                    <img src="${image}" alt="Prévia" />
+                  </div>
+                  <button type="button" class="project-gallery-delete" data-remove-existing-image="${imageIndex}" style="right: 4px; bottom: 4px;">×</button>
+                  <button type="button" class="project-gallery-delete" data-set-primary-existing-image="${imageIndex}" style="right: 30px; bottom: 4px; border-color: rgba(103,232,249,0.7); color: #cffafe;">★</button>
                 </div>
               `).join('')
             : '<div style="padding:10px 12px; border:1px dashed rgba(103,232,249,0.3); border-radius:12px; color: var(--muted);">Sem imagens salvas</div>';
@@ -2357,6 +2384,16 @@
             button.addEventListener('click', () => {
               const targetIndex = Number(button.dataset.removeExistingImage);
               projectImagesState.splice(targetIndex, 1);
+              renderImageList(modalNode);
+            });
+          });
+
+          previewNode.querySelectorAll('[data-set-primary-existing-image]').forEach((button) => {
+            button.addEventListener('click', () => {
+              const targetIndex = Number(button.dataset.setPrimaryExistingImage);
+              const nextPrimaryImage = projectImagesState[targetIndex];
+              if (!nextPrimaryImage) return;
+              projectImagesState = [nextPrimaryImage, ...projectImagesState.filter((image) => image !== nextPrimaryImage)];
               renderImageList(modalNode);
             });
           });
@@ -2372,6 +2409,7 @@
               <option value="mobile" ${projectDevice === 'mobile' ? 'selected' : ''}>Mobile</option>
               <option value="tablet" ${projectDevice === 'tablet' ? 'selected' : ''}>Tablet</option>
               <option value="notebook" ${projectDevice === 'notebook' ? 'selected' : ''}>Notebook</option>
+              <option value="desktop" ${projectDevice === 'desktop' ? 'selected' : ''}>Desktop</option>
             </select>
           </div>
           <div class="field"><label>Tags (separadas por vírgula)</label><input name="tags" value="${escapeHtml((project.tags || []).join(', '))}" /></div>
@@ -2392,7 +2430,7 @@
             repo: String(formData.get('repo') || '').trim(),
             image: primaryImage,
             images: normalizedImages,
-            device: String(formData.get('device') || 'notebook').trim() || 'notebook',
+            device: String(formData.get('device') || 'desktop').trim() || 'desktop',
             tags: String(formData.get('tags') || '').split(',').map(tag => tag.trim()).filter(Boolean)
           };
 
@@ -2530,6 +2568,22 @@
           project.images = nextImages;
           project.image = nextImages[0] || '';
 
+          saveSiteData();
+          render();
+          return;
+        }
+
+        if (action === 'set-project-primary-image') {
+          const projectIndex = Number(button.dataset.projectIndex ?? 0);
+          const imageIndex = Number(button.dataset.imageIndex ?? 0);
+          const project = state.projects[projectIndex];
+          if (!project) return;
+
+          const currentImages = Array.isArray(project.images) && project.images.length ? project.images : (project.image ? [project.image] : []);
+          const selectedImage = currentImages[imageIndex];
+          if (!selectedImage) return;
+
+          project.image = selectedImage;
           saveSiteData();
           render();
           return;
