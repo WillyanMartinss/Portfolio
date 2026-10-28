@@ -1093,6 +1093,90 @@
         background: linear-gradient(135deg, rgba(96, 165, 250, 0.08), rgba(244, 114, 182, 0.08));
       }
 
+      .project-gallery-strip {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(52px, 1fr));
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .project-gallery-thumb {
+        width: 100%;
+        height: 56px;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(103, 232, 249, 0.3);
+        background: rgba(15, 23, 42, 0.24);
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .project-gallery-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .project-gallery-thumb:hover {
+        border-color: rgba(103, 232, 249, 0.7);
+      }
+
+      .image-lightbox {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 6, 23, 0.88);
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .image-lightbox.hidden {
+        display: none;
+      }
+
+      .lightbox-card {
+        position: relative;
+        width: min(900px, 92vw);
+        max-height: 90vh;
+        background: rgba(15, 23, 42, 0.96);
+        border: 1px solid rgba(103, 232, 249, 0.3);
+        border-radius: 24px;
+        padding: 18px;
+        box-shadow: 0 24px 60px rgba(2, 6, 23, 0.55);
+      }
+
+      .lightbox-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 14px;
+        color: var(--text);
+      }
+
+      .lightbox-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .lightbox-image-wrap {
+        width: 100%;
+        min-height: 420px;
+        border-radius: 18px;
+        overflow: hidden;
+        background: rgba(8, 19, 29, 0.9);
+      }
+
+      .lightbox-image-wrap img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        max-height: 70vh;
+        object-fit: contain;
+      }
+
       .project-tags {
         display: flex;
         flex-wrap: wrap;
@@ -1595,6 +1679,25 @@
         });
       }
 
+      function readMultipleImages(files) {
+        if (!files || !files.length) return Promise.resolve([]);
+        return Promise.all(Array.from(files)
+          .filter((file) => file && file.type && file.type.startsWith('image/'))
+          .map((file) => readImageFile(file))
+        ).then((items) => items.filter(Boolean));
+      }
+
+      function getProjectImages(project) {
+        if (!project) return [];
+        if (Array.isArray(project.images) && project.images.length) {
+          return project.images.filter(Boolean);
+        }
+        if (project.image) {
+          return [project.image];
+        }
+        return [];
+      }
+
       function loadState() {
         try {
           const raw = localStorage.getItem(STORAGE_KEY);
@@ -1779,25 +1882,36 @@
       function renderProjects() {
         const projectsGrid = document.getElementById('projectsGrid');
         projectsGrid.innerHTML = state.projects.map((project, index) => {
+          const projectImages = getProjectImages(project);
           const previewUrl = project.url && /^https?:\/\//i.test(project.url) ? project.url : '';
-          const imageMarkup = project.image
-            ? `<img src="${project.image}" alt="${escapeHtml(project.title)}" loading="lazy" />`
+          const primaryImage = projectImages[0];
+          const imageMarkup = primaryImage
+            ? `<img src="${primaryImage}" alt="${escapeHtml(project.title)}" loading="lazy" />`
             : `<div class="placeholder">${escapeHtml(project.title || 'Preview do projeto')}</div>`;
 
           const tags = (project.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('');
+          const galleryStrip = projectImages.length > 1
+            ? `<div class="project-gallery-strip">${projectImages.slice(0, 4).map((image, imageIndex) => `
+                <button type="button" class="project-gallery-thumb" data-action="open-project-gallery" data-project-index="${index}" data-image-index="${imageIndex}" aria-label="Ver imagem ${imageIndex + 1}">
+                  <img src="${image}" alt="${escapeHtml(project.title)}" loading="lazy" />
+                </button>
+              `).join('')}</div>`
+            : '';
 
           return `
             <article class="project-card reveal" data-tilt>
-              <div class="project-visual">
+              <div class="project-visual" data-action="open-project-gallery" data-project-index="${index}" data-image-index="0" style="cursor:pointer;">
                 ${imageMarkup}
                 ${previewUrl ? '<span class="preview-badge">Preview</span>' : ''}
               </div>
+              ${galleryStrip}
               <h3>${escapeHtml(project.title)}</h3>
               <p>${escapeHtml(project.description)}</p>
               <div class="project-tags">${tags}</div>
               <div class="project-actions">
                 ${project.url ? `<a class="btn small" href="${escapeHtml(project.url)}" target="_blank" rel="noreferrer">Visitar</a>` : ''}
                 ${project.repo ? `<a class="btn small secondary" href="${escapeHtml(project.repo)}" target="_blank" rel="noreferrer">Código</a>` : ''}
+                ${projectImages.length > 1 ? `<button type="button" class="btn small secondary" data-action="open-project-gallery" data-project-index="${index}" data-image-index="0">Expandir</button>` : ''}
                 ${isLogged ? `<button type="button" class="btn small" data-action="edit-project" data-index="${index}">Editar</button>` : ''}
                 ${isLogged ? `<button type="button" class="btn small secondary" data-action="delete-project" data-index="${index}">Excluir</button>` : ''}
               </div>
@@ -2110,6 +2224,53 @@
         });
       }
 
+      function openProjectGallery(projectIndex, startIndex = 0) {
+        const images = getProjectImages(state.projects[projectIndex]);
+        if (!images.length) return;
+
+        const gallery = document.createElement('div');
+        gallery.className = 'image-lightbox';
+
+        let currentIndex = Number(startIndex) || 0;
+        const render = () => {
+          const image = images[currentIndex];
+          gallery.innerHTML = `
+            <div class="lightbox-card">
+              <div class="lightbox-header">
+                <div>
+                  <strong>${escapeHtml(state.projects[projectIndex]?.title || 'Projeto')}</strong>
+                  <div style="font-size:0.75rem; color: var(--muted);">${currentIndex + 1} / ${images.length}</div>
+                </div>
+                <div class="lightbox-controls">
+                  <button type="button" class="btn small secondary" data-gallery-action="prev">Anterior</button>
+                  <button type="button" class="btn small secondary" data-gallery-action="next">Próxima</button>
+                  <button type="button" class="btn small" data-gallery-action="close">Fechar</button>
+                </div>
+              </div>
+              <div class="lightbox-image-wrap">
+                <img src="${image}" alt="${escapeHtml(state.projects[projectIndex]?.title || 'Imagem do projeto')}" />
+              </div>
+            </div>
+          `;
+
+          gallery.querySelector('[data-gallery-action="prev"]').addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            render();
+          });
+          gallery.querySelector('[data-gallery-action="next"]').addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            render();
+          });
+          gallery.querySelector('[data-gallery-action="close"]').addEventListener('click', () => gallery.remove());
+          gallery.addEventListener('click', (event) => {
+            if (event.target === gallery) gallery.remove();
+          });
+        };
+
+        render();
+        document.body.appendChild(gallery);
+      }
+
       function openProjectEditor(index = null) {
         const project = index !== null ? state.projects[index] : {
           title: '',
@@ -2117,8 +2278,20 @@
           url: '',
           repo: '',
           image: '',
+          images: [],
           tags: []
         };
+        const existingImages = Array.isArray(project.images) && project.images.length
+          ? project.images
+          : (project.image ? [project.image] : []);
+
+        const imagePreview = existingImages.length
+          ? `<div class="project-gallery-strip">${existingImages.slice(0, 4).map((image) => `
+              <div class="project-gallery-thumb" style="height:64px; width:100%; cursor:default;">
+                <img src="${image}" alt="Prévia" />
+              </div>
+            `).join('')}</div>`
+          : '';
 
         const fields = `
           <div class="field"><label>Título</label><input name="title" value="${escapeHtml(project.title || '')}" /></div>
@@ -2126,19 +2299,24 @@
           <div class="field"><label>Link do site para prévia</label><input name="url" value="${escapeHtml(project.url || '')}" placeholder="https://exemplo.com" /></div>
           <div class="field"><label>Repositório</label><input name="repo" value="${escapeHtml(project.repo || '')}" /></div>
           <div class="field"><label>Tags (separadas por vírgula)</label><input name="tags" value="${escapeHtml((project.tags || []).join(', '))}" /></div>
-          <div class="field"><label>Imagem alternativa</label><input name="image" type="file" accept="image/*" /></div>
+          <div class="field"><label>Imagens do projeto (várias)</label><input name="images" type="file" accept="image/*" multiple /></div>
+          ${imagePreview ? `<div class="field"><label>Imagens atuais</label>${imagePreview}</div>` : ''}
         `;
 
         openModal(index === null ? 'Novo projeto' : 'Editar projeto', fields, async (formData) => {
-          const file = formData.get('image');
-          const image = file && file.name ? await readImageFile(file) : project.image || '';
+          const uploadedFiles = Array.from(formData.getAll('images')).filter(Boolean);
+          const uploadedImages = uploadedFiles.length ? await readMultipleImages(uploadedFiles) : existingImages;
+
+          const normalizedImages = uploadedImages.filter(Boolean);
+          const primaryImage = normalizedImages[0] || project.image || '';
 
           const newProject = {
             title: String(formData.get('title') || '').trim() || 'Novo projeto',
             description: String(formData.get('description') || '').trim(),
             url: String(formData.get('url') || '').trim(),
             repo: String(formData.get('repo') || '').trim(),
-            image,
+            image: primaryImage,
+            images: normalizedImages,
             tags: String(formData.get('tags') || '').split(',').map(tag => tag.trim()).filter(Boolean)
           };
 
@@ -2257,6 +2435,11 @@
         if (action === 'new-project') openProjectEditor();
         if (action === 'edit-account') openAccountEditor();
         if (action === 'logout') handleLogout();
+        if (action === 'open-project-gallery') {
+          const projectIndex = Number(button.dataset.projectIndex ?? button.dataset.index ?? 0);
+          const imageIndex = Number(button.dataset.imageIndex ?? 0);
+          openProjectGallery(projectIndex, imageIndex);
+        }
 
         if (action === 'edit-project') {
           const index = Number(button.dataset.index);
