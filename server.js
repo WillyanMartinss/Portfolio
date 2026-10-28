@@ -41,10 +41,10 @@ const baseData = {
     linkedin: 'https://www.linkedin.com/in/willyan-martins'
   },
   skills: [
-    { icon: '⚙️', title: 'Frontend', text: 'Interfaces responsivas, modernas e pensadas para performance e usabilidade.' },
-    { icon: '🧠', title: 'UX/UI', text: 'Experiências com foco em clareza visual, navegação fluida e boa conversão.' },
-    { icon: '💻', title: 'Backend', text: 'APIs, integrações, autenticação e lógica para aplicações robustas.' },
-    { icon: '📦', title: 'Produtos', text: 'Transformo ideias em soluções úteis, escaláveis e com foco em resultado.' }
+    { icon: '🧩', title: 'Frontend', text: 'Interfaces modernas, dashboards e telas responsivas para web com foco em experiência e clareza.' },
+    { icon: '⚙️', title: 'Backend', text: 'APIs, autenticação, regras de negócio e integração com banco de dados para sistemas funcionais.' },
+    { icon: '📲', title: 'Automação', text: 'Integrações e fluxos práticos, como WhatsApp e comunicação automatizada, para melhorar processos.' },
+    { icon: '📦', title: 'Produtos', text: 'Soluções para gestão, operação e plataformas digitais com foco em uso real e valor para o negócio.' }
   ],
   projects: [
     {
