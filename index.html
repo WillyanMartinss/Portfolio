@@ -114,20 +114,29 @@
       body::after {
         content: "";
         position: fixed;
-        inset: -18% -10% auto auto;
-        width: 420px;
-        height: 420px;
-        background: radial-gradient(circle, rgba(103, 232, 249, 0.12), rgba(167, 139, 250, 0.05) 30%, transparent 70%);
-        filter: blur(24px);
+        inset: -12% -6% auto auto;
+        width: 260px;
+        height: 260px;
+        background: radial-gradient(circle, rgba(103, 232, 249, 0.12), rgba(167, 139, 250, 0.04) 30%, transparent 70%);
+        filter: blur(18px);
         pointer-events: none;
-        animation: auroraFloat 18s ease-in-out infinite alternate;
+        animation: auroraFloat 16s ease-in-out infinite alternate;
         z-index: 0;
         will-change: transform;
       }
 
       @keyframes auroraFloat {
-        0% { transform: translate3d(-10px, 0, 0) scale(1); }
-        100% { transform: translate3d(40px, 30px, 0) scale(1.2); }
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        100% { transform: translate3d(18px, 12px, 0) scale(1.08); }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html { scroll-behavior: auto; }
+        *, *::before, *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
       }
 
       a { color: inherit; text-decoration: none; }
@@ -196,6 +205,43 @@
       :root[data-theme="light"] .nav a,
       :root[data-theme="light"] .nav button {
         background: rgba(255, 255, 255, 0.5);
+        border-color: rgba(15, 23, 42, 0.08);
+      }
+
+      :root[data-theme="light"] .topbar,
+      :root[data-theme="light"] .skill-card,
+      :root[data-theme="light"] .project-card,
+      :root[data-theme="light"] .info-card,
+      :root[data-theme="light"] .hero-card,
+      :root[data-theme="light"] .stat,
+      :root[data-theme="light"] .admin-inner,
+      :root[data-theme="light"] .modal-card,
+      :root[data-theme="light"] .mini-card,
+      :root[data-theme="light"] .project-visual,
+      :root[data-theme="light"] input,
+      :root[data-theme="light"] textarea,
+      :root[data-theme="light"] select {
+        background: rgba(255, 255, 255, 0.96);
+        border-color: rgba(15, 23, 42, 0.1);
+        color: var(--text);
+      }
+
+      :root[data-theme="light"] .skill-card p,
+      :root[data-theme="light"] .project-card p,
+      :root[data-theme="light"] .info-card p,
+      :root[data-theme="light"] .resume-copy,
+      :root[data-theme="light"] .contact-list,
+      :root[data-theme="light"] .contact-item,
+      :root[data-theme="light"] .tag,
+      :root[data-theme="light"] .project-visual .preview-badge,
+      :root[data-theme="light"] .stat span,
+      :root[data-theme="light"] .contact-item span:last-child {
+        color: var(--muted);
+      }
+
+      :root[data-theme="light"] .project-visual .preview-badge,
+      :root[data-theme="light"] .tag {
+        background: rgba(255, 255, 255, 0.9);
         border-color: rgba(15, 23, 42, 0.08);
       }
 
@@ -1308,12 +1354,10 @@
           padding: 18px;
         }
       }
+
     </style>
   </head>
   <body>
-    <div class="scroll-progress" id="scrollProgress"></div>
-    <div class="cursor" id="cursorGlow"></div>
-
     <header class="topbar">
       <div class="container topbar-inner">
         <div class="brand">Willyan Martins Portifólios</div>
@@ -1362,24 +1406,7 @@
             </div>
             <div class="profile-media">
               <div class="photo-frame">
-                <img id="heroImage" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80" alt="Foto do profissional" />
-              </div>
-              <div class="mini-carousel" id="miniCarousel">
-                <article class="mini-card active">
-                  <span>Projeto</span>
-                  <strong>Dashboard de gestão</strong>
-                  <small>Entrega mais clareza, automação e produtividade para negócios.</small>
-                </article>
-                <article class="mini-card">
-                  <span>Feedback</span>
-                  <strong>Empresa de software</strong>
-                  <small>Fluxo mais eficiente, comunicação melhor e presença digital mais forte.</small>
-                </article>
-                <article class="mini-card">
-                  <span>Resultado</span>
-                  <strong>Experiência premium</strong>
-                  <small>Interfaces modernas com foco em conversão, confiança e valor percebido.</small>
-                </article>
+                <img id="heroImage" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=70" alt="Foto do profissional" loading="eager" decoding="async" />
               </div>
             </div>
             <div class="hero-card-body">
@@ -1483,7 +1510,7 @@
           city: 'São Paulo, SP',
           github: 'github.com/seuusuario',
           linkedin: 'linkedin.com/in/seuusuario',
-          heroImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80',
+          heroImage: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=70',
           logoImage: '',
           years: '4+',
           projectsCount: '12',
@@ -1594,6 +1621,19 @@
         localStorage.setItem(ACCOUNT_KEY, JSON.stringify(account));
       }
 
+      function getTimeBasedTheme() {
+        const hour = new Date().getHours();
+        return hour >= 7 && hour < 19 ? 'light' : 'dark';
+      }
+
+      function getInitialTheme() {
+        const savedTheme = localStorage.getItem(THEME_KEY);
+        if (savedTheme === 'light' || savedTheme === 'dark') {
+          return savedTheme;
+        }
+        return getTimeBasedTheme();
+      }
+
       function applyTheme(themeName) {
         const nextTheme = themeName === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', nextTheme);
@@ -1659,7 +1699,7 @@
 
         const heroImage = document.getElementById('heroImage');
         if (heroImage) {
-          heroImage.src = profile.heroImage || 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=900&q=80';
+          heroImage.src = profile.heroImage || 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=70';
           heroImage.alt = `${profile.name || 'Perfil'} | Imagem principal`;
         }
 
@@ -1813,134 +1853,6 @@
         oscillator.stop(context.currentTime + duration);
       }
 
-      function setupInteractionSound() {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (prefersReducedMotion) return;
-
-        const interactiveElements = document.querySelectorAll('.skill-card, .project-card, .btn, a, button');
-        interactiveElements.forEach((element) => {
-          if (element.dataset.soundBound === 'true') return;
-          element.dataset.soundBound = 'true';
-
-          element.addEventListener('pointerenter', () => {
-            playUiTone({
-              frequency: 420 + Math.random() * 180,
-              duration: 0.045,
-              type: 'triangle',
-              gain: 0.008,
-              endFrequency: 640
-            });
-          }, { passive: true });
-
-          element.addEventListener('click', () => {
-            playUiTone({
-              frequency: 560,
-              duration: 0.08,
-              type: 'sine',
-              gain: 0.013,
-              endFrequency: 800
-            });
-          }, { passive: true });
-        });
-      }
-
-      function setupCursor() {
-        if (cursorInitialized) return;
-
-        const isFinePointer = window.matchMedia('(pointer: fine)').matches;
-        if (!isFinePointer) return;
-
-        cursorInitialized = true;
-
-        const cursor = document.getElementById('cursorGlow');
-        if (!cursor) return;
-
-        document.body.classList.add('has-cursor');
-        cursor.style.opacity = '1';
-
-        const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-        const current = { x: target.x, y: target.y };
-
-        const move = (event) => {
-          target.x = event.clientX;
-          target.y = event.clientY;
-          cursor.style.opacity = '1';
-        };
-
-        document.addEventListener('pointermove', move, { passive: true });
-        document.addEventListener('pointerdown', () => cursor.classList.add('active'));
-        document.addEventListener('pointerup', () => cursor.classList.remove('active'));
-        document.addEventListener('pointerleave', () => {
-          cursor.style.opacity = '0';
-        });
-
-        const render = () => {
-          current.x += (target.x - current.x) * 0.28;
-          current.y += (target.y - current.y) * 0.28;
-          cursor.style.transform = `translate(${current.x - 18}px, ${current.y - 18}px)`;
-          requestAnimationFrame(render);
-        };
-
-        requestAnimationFrame(render);
-      }
-
-      function setupHeroCarousel() {
-        const cards = Array.from(document.querySelectorAll('.mini-card'));
-        if (!cards.length || heroCarouselTimer) return;
-
-        let index = 0;
-        heroCarouselTimer = setInterval(() => {
-          cards.forEach((card, cardIndex) => {
-            card.classList.toggle('active', cardIndex === index);
-          });
-          index = (index + 1) % cards.length;
-        }, 2600);
-      }
-
-      function setupTiltCards() {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (prefersReducedMotion) return;
-
-        const cards = document.querySelectorAll('[data-tilt]');
-        cards.forEach((card) => {
-          card.style.willChange = 'transform';
-
-          card.addEventListener('pointermove', (event) => {
-            const rect = card.getBoundingClientRect();
-            const px = (event.clientX - rect.left) / rect.width;
-            const py = (event.clientY - rect.top) / rect.height;
-            const rotateY = (px - 0.5) * 12;
-            const rotateX = (0.5 - py) * 12;
-            card.style.setProperty('--rx', `${rotateX}deg`);
-            card.style.setProperty('--ry', `${rotateY}deg`);
-            card.style.setProperty('--x', `${px * 100}%`);
-            card.style.setProperty('--y', `${py * 100}%`);
-          }, { passive: true });
-
-          card.addEventListener('pointerleave', () => {
-            card.style.setProperty('--rx', '0deg');
-            card.style.setProperty('--ry', '0deg');
-            card.style.setProperty('--x', '50%');
-            card.style.setProperty('--y', '50%');
-          });
-        });
-      }
-
-      function setupScrollProgress() {
-        const progress = document.getElementById('scrollProgress');
-        if (!progress || scrollProgressInitialized) return;
-        scrollProgressInitialized = true;
-
-        const update = () => {
-          const max = document.documentElement.scrollHeight - window.innerHeight;
-          const percent = max > 0 ? (window.scrollY / max) * 100 : 0;
-          progress.style.transform = `scaleX(${percent / 100})`;
-        };
-
-        update();
-        window.addEventListener('scroll', update, { passive: true });
-      }
-
       function setupTypewriter() {
         const node = document.getElementById('heroBio');
         if (!node) return;
@@ -2061,13 +1973,8 @@
         setSession(isLogged);
         document.getElementById('year').textContent = String(new Date().getFullYear());
         initRevealEffects();
-        setupTiltCards();
-        setupCursor();
-        setupInteractionSound();
-        setupScrollProgress();
         setupTypewriter();
         setupResumeTypewriter();
-        setupHeroCarousel();
       }
 
       function openModal(title, formHtml, submitHandler) {
@@ -2335,7 +2242,7 @@
         applyTheme(nextTheme);
       });
 
-      const savedTheme = localStorage.getItem(THEME_KEY) || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+      const savedTheme = getInitialTheme();
       applyTheme(savedTheme);
 
       document.addEventListener('click', (event) => {

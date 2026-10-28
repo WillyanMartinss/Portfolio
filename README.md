@@ -46,6 +46,9 @@ O site possui um painel restrito para edição do conteúdo, permitindo alterar:
 ### 3. Sistema de login
 O acesso ao painel é protegido por autenticação.
 
+As credenciais devem ser definidas somente no ambiente do Vercel, por meio das variáveis `ADMIN_USER` e `ADMIN_PASS`.
+
+Não mantenha senha real em arquivos de código ou documentação pública.
 
 O login chama a API `/api/login` e gera um token de sessão para uso no painel administrativo.
 
@@ -147,15 +150,17 @@ As tabelas principais são:
 
 ## Variáveis de ambiente
 
-Crie um arquivo `.env` local ou configure no painel da Vercel com:
+Crie um arquivo `.env` local ou configure no painel da Vercel com valores seguros, por exemplo:
 
 ```env
 POSTGRES_URL="postgres://user:password@host:5432/dbname"
-
+ADMIN_USER="admin"
+ADMIN_PASS="troque-por-uma-senha-forte"
 SESSION_SECRET="troque-por-um-segredo-forte"
+PUBLIC_PORTFOLIO_ONLY="true"
 ```
 
-> Em produção no Vercel, o recomendado é usar `DATABASE_URL` ou `POSTGRES_URL` conforme o provedor escolhido.
+> Em produção no Vercel, o recomendado é usar `DATABASE_URL` ou `POSTGRES_URL` conforme o provedor escolhido. O valor real da senha não deve ficar no código nem no README.
 
 ## Como rodar localmente
 
@@ -195,7 +200,7 @@ Se o banco não estiver configurado em variáveis, o sistema usa SQLite local au
 
 - O SQLite é útil para desenvolvimento, mas não é recomendado para persistência real em produção na Vercel
 - O painel administrativo está protegido por autenticação ativa
-- A senha do admin padrão é sensível e deve ser trocada em produção
+- A senha do admin deve ser configurada somente em variáveis de ambiente do Vercel
 - O projeto está preparado para uma base profissional e futurista de apresentação de portfólio
 
 ## Segurança

@@ -1,8 +1,14 @@
 const express = require('express');
 const crypto = require('crypto');
+const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
-const { DatabaseSync } = require('node:sqlite');
+let DatabaseSync = null;
+try {
+  ({ DatabaseSync } = require('node:sqlite'));
+} catch (error) {
+  console.warn('node:sqlite indisponível neste ambiente; usando fallback em arquivo JSON.', error.message);
+}
 const { Pool } = require('pg');
 
 const envPath = path.resolve(__dirname, '.env.local');
@@ -15,10 +21,13 @@ if (require('fs').existsSync(envPath)) {
 
 const app = express();
 const PORT = process.env.PORT || 8000;
-const DB_PATH = path.join(__dirname, 'portfolio.db');
-const DATABASE_URL = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || process.env.DATABASE_URL || '';
-const usePostgres = Boolean(DATABASE_URL);
+const STORAGE_ROOT = process.env.VERCEL ? '/tmp' : __dirname;
+const DB_PATH = path.join(STORAGE_ROOT, 'portfolio.db');
+const DATA_FILE_PATH = path.join(STORAGE_ROOT, 'portfolio-data.json');
+const DATABASE_URL = process.env.DATABASE_URL || process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL || '';
+let usePostgres = Boolean(DATABASE_URL);
 const SESSION_SECRET = process.env.SESSION_SECRET || 'portfolio-secret-change-me';
+const PUBLIC_PORTFOLIO_ONLY = process.env.PUBLIC_PORTFOLIO_ONLY !== 'false';
 
 const baseData = {
   profile: {
@@ -72,7 +81,7 @@ const baseData = {
 const hash = (value) => crypto.createHash('sha256').update(String(value)).digest('hex');
 const normalizeUser = (value) => String(value || '').trim();
 const currentAdminUser = normalizeUser(process.env.ADMIN_USER || 'admin');
-const currentAdminPassword = process.env.ADMIN_PASS || 'Paramore20@x';
+const currentAdminPassword = process.env.ADMIN_PASS || 'troque-por-uma-senha-forte';
 
 function deepClone(value) {
   return JSON.parse(JSON.stringify(value));
@@ -90,7 +99,85 @@ function normalizeSiteData(data) {
 let sqliteDb = null;
 let postgresPool = null;
 
+function readFileJsonStorage() {
+  try {
+    if (!fs.existsSync(DATA_FILE_PATH)) {
+      fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(baseData, null, 2), 'utf8');
+    }
+    const raw = fs.readFileSync(DATA_FILE_PATH, 'utf8');
+    return JSON.parse(raw || JSON.stringify(baseData));
+  } catch (error) {
+    console.warn('Erro ao ler armazenamento em arquivo JSON. Usando dados padrão.', error.message);
+    return deepClone(baseData);
+  }
+}
+
+function writeFileJsonStorage(payload) {
+  try {
+    const normalized = normalizeSiteData(payload);
+    fs.writeFileSync(DATA_FILE_PATH, JSON.stringify(normalized, null, 2), 'utf8');
+    return normalized;
+  } catch (error) {
+    console.warn('Erro ao gravar armazenamento em arquivo JSON.', error.message);
+    return normalizeSiteData(payload);
+  }
+}
+
+function getFileAdminState() {
+  const adminFile = DATA_FILE_PATH + '.admin.json';
+  try {
+    if (!fs.existsSync(adminFile)) {
+      const defaultState = { username: currentAdminUser, password_hash: hash(currentAdminPassword) };
+      fs.writeFileSync(adminFile, JSON.stringify(defaultState, null, 2), 'utf8');
+      return defaultState;
+    }
+    return JSON.parse(fs.readFileSync(adminFile, 'utf8'));
+  } catch (error) {
+    console.warn('Erro ao ler admin do armazenamento em arquivo.', error.message);
+    return { username: currentAdminUser, password_hash: hash(currentAdminPassword) };
+  }
+}
+
+function setFileAdminState(nextState) {
+  const adminFile = DATA_FILE_PATH + '.admin.json';
+  const safeState = {
+    username: normalizeUser(nextState?.username || currentAdminUser),
+    password_hash: hash(String(nextState?.password || currentAdminPassword))
+  };
+  fs.writeFileSync(adminFile, JSON.stringify(safeState, null, 2), 'utf8');
+  return safeState;
+}
+
+function getFileSessions() {
+  const sessionsFile = DATA_FILE_PATH + '.sessions.json';
+  try {
+    if (!fs.existsSync(sessionsFile)) {
+      fs.writeFileSync(sessionsFile, JSON.stringify([], null, 2), 'utf8');
+      return [];
+    }
+    const raw = fs.readFileSync(sessionsFile, 'utf8');
+    return JSON.parse(raw || '[]');
+  } catch (error) {
+    console.warn('Erro ao ler sessões do armazenamento em arquivo.', error.message);
+    return [];
+  }
+}
+
+function persistFileSessions(sessions) {
+  const sessionsFile = DATA_FILE_PATH + '.sessions.json';
+  fs.writeFileSync(sessionsFile, JSON.stringify(sessions, null, 2), 'utf8');
+}
+
 function initializeSqliteDatabase() {
+  if (!DatabaseSync) {
+    const fileData = readFileJsonStorage();
+    const adminRecord = { username: currentAdminUser, password_hash: hash(currentAdminPassword) };
+    if (!fs.existsSync(DATA_FILE_PATH + '.admin.json')) {
+      fs.writeFileSync(DATA_FILE_PATH + '.admin.json', JSON.stringify(adminRecord, null, 2), 'utf8');
+    }
+    return { payload: fileData };
+  }
+
   sqliteDb = new DatabaseSync(DB_PATH);
   sqliteDb.exec('PRAGMA journal_mode = WAL;');
   sqliteDb.exec(`
@@ -127,42 +214,55 @@ function initializeSqliteDatabase() {
 }
 
 async function initializePostgresDatabase() {
-  postgresPool = new Pool({
-    connectionString: DATABASE_URL,
-    ssl: process.env.VERCEL ? { rejectUnauthorized: false } : false
-  });
-
-  await postgresPool.query(`
-    CREATE TABLE IF NOT EXISTS site_data (
-      id INTEGER PRIMARY KEY CHECK (id = 1),
-      payload JSONB NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS admin (
-      id INTEGER PRIMARY KEY CHECK (id = 1),
-      username TEXT NOT NULL,
-      password_hash TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS sessions (
-      token TEXT PRIMARY KEY,
-      created_at BIGINT NOT NULL
-    );
-  `);
-
-  const adminResult = await postgresPool.query('SELECT * FROM admin WHERE id = 1');
-  if (!adminResult.rows.length) {
-    await postgresPool.query('INSERT INTO admin (id, username, password_hash) VALUES (1, $1, $2)', [currentAdminUser, hash(currentAdminPassword)]);
-  } else {
-    await postgresPool.query('UPDATE admin SET username = $1, password_hash = $2 WHERE id = 1', [currentAdminUser, hash(currentAdminPassword)]);
+  if (!DATABASE_URL) {
+    console.warn('DATABASE_URL ausente. Usando SQLite local como fallback no Vercel.');
+    usePostgres = false;
+    return initializeSqliteDatabase();
   }
 
-  const siteResult = await postgresPool.query('SELECT payload FROM site_data WHERE id = 1');
-  if (!siteResult.rows.length) {
-    await postgresPool.query('INSERT INTO site_data (id, payload) VALUES (1, $1)', [baseData]);
-  }
+  try {
+    postgresPool = new Pool({
+      connectionString: DATABASE_URL,
+      ssl: process.env.VERCEL ? { rejectUnauthorized: false } : false
+    });
 
-  return postgresPool;
+    await postgresPool.query(`
+      CREATE TABLE IF NOT EXISTS site_data (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        payload JSONB NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS admin (
+        id INTEGER PRIMARY KEY CHECK (id = 1),
+        username TEXT NOT NULL,
+        password_hash TEXT NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS sessions (
+        token TEXT PRIMARY KEY,
+        created_at BIGINT NOT NULL
+      );
+    `);
+
+    const adminResult = await postgresPool.query('SELECT * FROM admin WHERE id = 1');
+    if (!adminResult.rows.length) {
+      await postgresPool.query('INSERT INTO admin (id, username, password_hash) VALUES (1, $1, $2)', [currentAdminUser, hash(currentAdminPassword)]);
+    } else {
+      await postgresPool.query('UPDATE admin SET username = $1, password_hash = $2 WHERE id = 1', [currentAdminUser, hash(currentAdminPassword)]);
+    }
+
+    const siteResult = await postgresPool.query('SELECT payload FROM site_data WHERE id = 1');
+    if (!siteResult.rows.length) {
+      await postgresPool.query('INSERT INTO site_data (id, payload) VALUES (1, $1)', [baseData]);
+    }
+
+    usePostgres = true;
+    return postgresPool;
+  } catch (error) {
+    console.error('Falha ao conectar com Postgres. Fallback para SQLite local.', error);
+    usePostgres = false;
+    return initializeSqliteDatabase();
+  }
 }
 
 async function initializeDatabase() {
@@ -173,6 +273,10 @@ async function initializeDatabase() {
 }
 
 function getSqliteSiteData() {
+  if (!sqliteDb) {
+    return readFileJsonStorage();
+  }
+
   const row = sqliteDb.prepare('SELECT payload FROM site_data WHERE id = 1').get();
   if (!row) return deepClone(baseData);
   try {
@@ -196,6 +300,10 @@ async function getSiteData() {
 
 function saveSqliteSiteData(data) {
   const normalized = normalizeSiteData(data);
+  if (!sqliteDb) {
+    return writeFileJsonStorage(normalized);
+  }
+
   sqliteDb.prepare('UPDATE site_data SET payload = ? WHERE id = 1').run(JSON.stringify(normalized));
   return normalized;
 }
@@ -215,6 +323,10 @@ async function saveSiteData(data) {
 }
 
 async function authenticate(req, res, next) {
+  if (PUBLIC_PORTFOLIO_ONLY) {
+    return next();
+  }
+
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';
 
@@ -223,6 +335,12 @@ async function authenticate(req, res, next) {
   if (usePostgres) {
     const result = await postgresPool.query('SELECT token FROM sessions WHERE token = $1', [token]);
     if (!result.rows.length) return res.status(401).json({ error: 'Sessão inválida' });
+    return next();
+  }
+
+  if (!sqliteDb) {
+    const session = getFileSessions().find((entry) => entry.token === token);
+    if (!session) return res.status(401).json({ error: 'Sessão inválida' });
     return next();
   }
 
@@ -255,6 +373,19 @@ app.post('/api/login', async (req, res) => {
 
     const token = crypto.randomBytes(24).toString('hex');
     await postgresPool.query('INSERT INTO sessions (token, created_at) VALUES ($1, $2)', [token, Date.now()]);
+    return res.json({ token });
+  }
+
+  if (!sqliteDb) {
+    const row = getFileAdminState();
+    if (!row || row.username !== username || row.password_hash !== hash(password)) {
+      return res.status(401).json({ error: 'Usuário ou senha inválidos' });
+    }
+
+    const token = crypto.randomBytes(24).toString('hex');
+    const sessions = getFileSessions();
+    sessions.push({ token, created_at: Date.now() });
+    persistFileSessions(sessions);
     return res.json({ token });
   }
 
@@ -291,6 +422,11 @@ app.post('/api/admin/account', authenticate, async (req, res) => {
     return res.json({ ok: true, username });
   }
 
+  if (!sqliteDb) {
+    setFileAdminState({ username, password });
+    return res.json({ ok: true, username });
+  }
+
   sqliteDb.prepare('UPDATE admin SET username = ?, password_hash = ? WHERE id = 1').run(username, hash(password));
   res.json({ ok: true, username });
 });
@@ -301,6 +437,12 @@ app.delete('/api/admin/logout', authenticate, async (req, res) => {
 
   if (usePostgres) {
     await postgresPool.query('DELETE FROM sessions WHERE token = $1', [token]);
+    return res.json({ ok: true });
+  }
+
+  if (!sqliteDb) {
+    const sessions = getFileSessions().filter((entry) => entry.token !== token);
+    persistFileSessions(sessions);
     return res.json({ ok: true });
   }
 
@@ -317,7 +459,7 @@ app.get('*', (req, res) => {
 
 async function startServer() {
   if (process.env.VERCEL && !DATABASE_URL) {
-    throw new Error('DATABASE_URL ausente. Defina um banco PostgreSQL no ambiente da Vercel antes do deploy.');
+    console.warn('DATABASE_URL ausente no ambiente Vercel; iniciando em modo fallback SQLite para manter o site online.');
   }
 
   await initializeDatabase();
@@ -325,7 +467,7 @@ async function startServer() {
     app.listen(PORT, () => {
       console.log(`Servidor rodando em http://localhost:${PORT}`);
       console.log(`Banco: ${usePostgres ? 'Postgres/Vercel' : 'SQLite local'}`);
-      console.log(`Login: ${currentAdminUser} / ${currentAdminPassword}`);
+      console.log(`Login: ${currentAdminUser} (senha configurada via ADMIN_PASS no ambiente)`);
     });
   }
 }
