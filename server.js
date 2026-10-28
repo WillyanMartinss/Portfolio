@@ -31,50 +31,58 @@ const PUBLIC_PORTFOLIO_ONLY = process.env.PUBLIC_PORTFOLIO_ONLY !== 'false';
 
 const baseData = {
   profile: {
-    name: 'Seu Nome',
+    name: 'Willyan Martins',
     title: 'Desenvolvedor Full Stack',
-    bio: 'Sou desenvolvedor focado em criar experiências digitais modernas, funcionalidade clara e interfaces que entregam valor real para pessoas e negócios.',
-    email: 'seuemail@email.com',
+    bio: 'Programador focado em criar soluções digitais práticas, funcionais e com boa experiência para usuários e negócios.',
+    email: 'willyanmartins.dev@gmail.com',
     phone: '(11) 99999-9999',
     city: 'São Paulo, SP',
-    github: 'github.com/seuusuario',
-    linkedin: 'linkedin.com/in/seuusuario'
+    github: 'https://github.com/WillyanMartinss',
+    linkedin: 'https://www.linkedin.com/in/willyan-martins'
   },
   skills: [
-    { icon: '⚙️', title: 'Frontend', text: 'Criação de interfaces responsivas, acessíveis e bem pensadas para diversas telas e dispositivos.' },
-    { icon: '🧠', title: 'UX/UI', text: 'Design focado em usabilidade, clareza visual e uma jornada eficiente para o usuário final.' },
-    { icon: '💻', title: 'Backend', text: 'Lógica de negócio, APIs, autenticação, integrações e estrutura para aplicações escaláveis.' },
-    { icon: '📦', title: 'Produtos', text: 'Transformo ideias em produtos úteis, com visão técnica, estratégica e de experiência.' }
+    { icon: '⚙️', title: 'Frontend', text: 'Interfaces responsivas, modernas e pensadas para performance e usabilidade.' },
+    { icon: '🧠', title: 'UX/UI', text: 'Experiências com foco em clareza visual, navegação fluida e boa conversão.' },
+    { icon: '💻', title: 'Backend', text: 'APIs, integrações, autenticação e lógica para aplicações robustas.' },
+    { icon: '📦', title: 'Produtos', text: 'Transformo ideias em soluções úteis, escaláveis e com foco em resultado.' }
   ],
   projects: [
     {
-      title: 'Sistema de Gestão',
-      description: 'Dashboard completo para organização de processos internos, relatórios e acompanhamento de indicadores em tempo real.',
-      url: 'https://example.com',
-      repo: 'https://github.com/example',
+      title: 'MiniERP',
+      description: 'Sistema de gestão com foco em organização interna, controle de processos e acompanhamento de operações.',
+      url: 'https://github.com/WillyanMartinss/MiniERP',
+      repo: 'https://github.com/WillyanMartinss/MiniERP',
       image: '',
-      tags: ['Dashboard', 'Web App', 'UX']
+      tags: ['ERP', 'Gestão', 'Dashboard']
     },
     {
-      title: 'Loja de E-commerce',
-      description: 'Loja moderna com catálogo, carrinho, checkout e identidade visual alinhada ao posicionamento da marca.',
-      url: 'https://example.com',
-      repo: 'https://github.com/example',
+      title: 'Portfolio',
+      description: 'Portfólio pessoal para apresentar projetos, perfil profissional e links de contato em uma interface moderna.',
+      url: 'https://github.com/WillyanMartinss/Portfolio',
+      repo: 'https://github.com/WillyanMartinss/Portfolio',
       image: '',
-      tags: ['E-commerce', 'React', 'Mobile']
+      tags: ['Portfolio', 'Frontend', 'Web']
     },
     {
-      title: 'Portal de Conteúdo',
-      description: 'Plataforma para publicação de artigos, categorias, busca e destaque de conteúdos por interesse do público.',
-      url: 'https://example.com',
-      repo: 'https://github.com/example',
+      title: 'Whatsapp-Eletron',
+      description: 'Projeto com foco em automação e integração de comunicação, pensado para fluxos práticos e dinâmicos.',
+      url: 'https://github.com/WillyanMartinss/Whatsapp-Eletron',
+      repo: 'https://github.com/WillyanMartinss/Whatsapp-Eletron',
       image: '',
-      tags: ['CMS', 'Blog', 'SEO']
+      tags: ['WhatsApp', 'Automação', 'Integração']
+    },
+    {
+      title: 'WYSHUB',
+      description: 'Projeto com estrutura voltada para plataforma e centralização de recursos, com foco em experiência e funcionalidade.',
+      url: 'https://github.com/WillyanMartinss/WYSHUB',
+      repo: 'https://github.com/WillyanMartinss/WYSHUB',
+      image: '',
+      tags: ['Plataforma', 'Sistema', 'Product']
     }
   ],
   resume: {
-    text: 'Profissional com foco em desenvolvimento de soluções digitais, experiência em produto, interface e arquitetura de software. Tenho trabalhado com criação de aplicações web, automação e melhorias contínuas para negócios e clientes.',
-    link: ''
+    text: 'Desenvolvedor com foco em soluções digitais, automações, gestão e interfaces modernas. Meu trabalho combina funcionalidade, organização e boa experiência para usuário.',
+    link: 'https://github.com/WillyanMartinss'
   }
 };
 
