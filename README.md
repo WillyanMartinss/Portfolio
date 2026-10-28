@@ -151,8 +151,7 @@ Crie um arquivo `.env` local ou configure no painel da Vercel com:
 
 ```env
 POSTGRES_URL="postgres://user:password@host:5432/dbname"
-ADMIN_USER="admin"
-ADMIN_PASS="Paramore20@x"
+
 SESSION_SECRET="troque-por-um-segredo-forte"
 ```
 
