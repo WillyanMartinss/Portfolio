@@ -46,10 +46,6 @@ O site possui um painel restrito para edição do conteúdo, permitindo alterar:
 ### 3. Sistema de login
 O acesso ao painel é protegido por autenticação.
 
-Credenciais padrão:
-
-- usuário: `admin`
-- senha: `Paramore20@x`
 
 O login chama a API `/api/login` e gera um token de sessão para uso no painel administrativo.
 
